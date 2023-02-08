@@ -140,3 +140,13 @@ def test_convert_crlf_to_lf_directory_nested_log_output(application: Application
         output = application.run(dir(), ['one/two'])
     # then
     assert output.text == "Corrected file one/two\\file1.txt\nCorrected file one/two\\file2.txt\n"
+
+
+def test_ignore_directory_with_improper_encoding(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/improper.txt', b'\x1f\x7f\xee \x0d\x0a')
+        # when
+        application.run(dir(), ['directory'])
+        # then
+        assert dir.open_bytes('directory/improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
