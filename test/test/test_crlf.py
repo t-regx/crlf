@@ -117,3 +117,26 @@ def test_convert_crlf_to_lf_directory_many_log_output(application: Application):
         output = application.run(dir(), ['directory'])
     # then
     assert output.text == "Corrected file directory\\file1.txt\nCorrected file directory\\file2.txt\n"
+
+
+def test_convert_crlf_to_lf_directory_nested(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('one/two/file1.txt', "line\r\nline")
+        dir.store('one/two/file2.txt', "line\r\nline")
+        # when
+        application.run(dir(), ['one/two'])
+        # then
+        assert dir.open('one/two/file1.txt') == "line\nline"
+        assert dir.open('one/two/file2.txt') == "line\nline"
+
+
+def test_convert_crlf_to_lf_directory_nested_log_output(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('one/two/file1.txt', "line\r\nline")
+        dir.store('one/two/file2.txt', "line\r\nline")
+        # when
+        output = application.run(dir(), ['one/two'])
+    # then
+    assert output.text == "Corrected file one/two\\file1.txt\nCorrected file one/two\\file2.txt\n"
