@@ -19,20 +19,26 @@
 # Do not rename this file.
 #
 from _pytest.fixtures import SubRequest
-from pytest import fixture, mark, param, Config, Item, Mark
+from pytest import fixture, mark, param, Parser, Config, Item, Mark
 
 from test.fixture.application import MemoryApplication, Application, ProcessApplication
 from test.fixture.pytest.mark import memory, process, memoryonly
+
+
+def pytest_addoption(parser: Parser):
+    parser.addoption('--slow-last', action='store_true', default=False)
 
 
 def pytest_configure(config: Config):
     config.addinivalue_line("markers", memory.name)
 
 
-def pytest_collection_modifyitems(items: list[Item]):
+def pytest_collection_modifyitems(config: Config, items: list[Item]):
     for item in list(items):
         if test_has_marker(item, memoryonly) and not test_has_marker(item, memory):
             items.remove(item)
+    if config.getoption('--slow-last'):
+        items.sort(key=lambda item: test_has_marker(item, mark.slow))
 
 
 def test_has_marker(item: Item, mark: Mark) -> bool:
