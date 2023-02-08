@@ -1,3 +1,10 @@
 # Project
 .idea/
 *.iml
+
+# Python
+venv/
+__pycache__
+
+# pytest
+.pytest_cache/
