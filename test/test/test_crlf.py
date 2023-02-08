@@ -150,3 +150,13 @@ def test_ignore_directory_with_improper_encoding(application: Application):
         application.run(dir(), ['directory'])
         # then
         assert dir.open_bytes('directory/improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
+
+
+def test_ignore_directory_with_improper_encoding_log_output(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/improper.txt', b'\x1f\x7f\xee')
+        # when
+        output = application.run(dir(), ['directory'])
+    # then
+    assert output.text == "Ignoring file directory\\improper.txt\n"

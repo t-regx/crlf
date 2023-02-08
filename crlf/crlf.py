@@ -31,9 +31,9 @@ def convert_directory(absolute_path: str, directory: str) -> None:
     for path, filename in directory_files(absolute_path):
         try:
             correct_file(path)
+            print(f'Corrected file {join(directory, filename)}')
         except UnicodeDecodeError:
-            pass
-        print(f'Corrected file {join(directory, filename)}')
+            print(f'Ignoring file {join(directory, filename)}')
 
 
 def convert_unicode_file(absolute_path: str, filename: str) -> None:
