@@ -11,13 +11,17 @@ def main(base: str, arguments: list[str]) -> None:
 
 def convert(parser, absolute_path: str, filename: str) -> None:
     if isfile(absolute_path):
-        try:
-            correct_file(absolute_path)
-            print(f'Corrected file {filename}')
-        except UnicodeDecodeError:
-            print(f'Ignoring file {filename}')
+        convert_unicode_file(absolute_path, filename)
     else:
         parser.error(f"file does not exist '{filename}'")
+
+
+def convert_unicode_file(absolute_path: str, filename: str) -> None:
+    try:
+        correct_file(absolute_path)
+        print(f'Corrected file {filename}')
+    except UnicodeDecodeError:
+        print(f'Ignoring file {filename}')
 
 
 def correct_file(filename: str) -> None:
