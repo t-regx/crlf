@@ -2,6 +2,26 @@ from test.conftest import Application
 from test.fixture.directory import directory
 
 
+def test_convert_crlf_to_lf(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('file.txt', "line\r\n")
+        # when
+        application.run(dir(), ['file.txt'])
+        # then
+        assert dir.open('file.txt') == "line\n"
+
+
+def test_convert_crlf_to_lf_multiline(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('file.txt', "one\r\ntwo\r\n")
+        # when
+        application.run(dir(), ['file.txt'])
+        # then
+        assert dir.open('file.txt') == "one\ntwo\n"
+
+
 def test_convert_crlf_to_lf_log_output(application: Application):
     # given
     with directory() as dir:

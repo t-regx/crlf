@@ -32,3 +32,14 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 """
+
+
+@mark.parametrize("argument", ['-h', '--help'])
+def test_help_does_not_modify_files(application: Application, argument: str):
+    # given
+    with directory() as dir:
+        dir.store('file.txt', 'line\r\n')
+        # when
+        application.run(dir(), [argument])
+        # then
+        assert dir.open('file.txt') == 'line\r\n'
