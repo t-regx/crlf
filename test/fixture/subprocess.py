@@ -5,10 +5,11 @@ from sys import executable
 import crlf
 
 
-def completed_process(arguments: list[str]) -> CompletedProcess:
+def completed_process(directory: str, arguments: list[str]) -> CompletedProcess:
     try:
         return run(
             env=dict(environ, PYTHONPATH=project_path()),
+            cwd=directory,
             args=[executable, '-m', crlf.__name__, *arguments],
             capture_output=True)
     except OSError:

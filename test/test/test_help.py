@@ -1,11 +1,14 @@
 from pytest import mark
 
 from test.fixture.application import Application
+from test.fixture.directory import directory
 
 
 def test_invoked_without_arguments(application: Application):
-    # when
-    output = application.run([])
+    # given
+    with directory() as dir:
+        # when
+        output = application.run(dir(), [])
     # then
     assert output.error == """usage: crlf [-h] filename
 crlf: error: the following arguments are required: filename
@@ -14,8 +17,10 @@ crlf: error: the following arguments are required: filename
 
 @mark.parametrize("argument", ['-h', '--help'])
 def test_help(application: Application, argument: str):
-    # when
-    output = application.run([argument])
+    # given
+    with directory() as dir:
+        # when
+        output = application.run(dir(), [argument])
     # then
     assert output.text == """usage: crlf [-h] filename
 
