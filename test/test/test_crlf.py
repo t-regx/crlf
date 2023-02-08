@@ -61,3 +61,13 @@ def test_ignore_file_with_improper_encoding_log_output(application: Application)
         output = application.run(dir(), ['improper.txt'])
     # then
     assert output.text == "Ignoring file improper.txt\n"
+
+
+def test_convert_crlf_to_lf_directory(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/file1.txt', "line\r\nline")
+        # when
+        application.run(dir(), ['directory'])
+        # then
+        assert dir.open('directory/file1.txt') == "line\nline"

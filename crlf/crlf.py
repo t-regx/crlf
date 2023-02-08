@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
-from os.path import isfile, join
+from os.path import isfile, join, isdir
+from os import walk
 
 
 def main(base: str, arguments: list[str]) -> None:
@@ -10,6 +11,8 @@ def main(base: str, arguments: list[str]) -> None:
 
 
 def convert(parser, absolute_path: str, filename: str) -> None:
+    if isdir(absolute_path):
+        correct_file(directory_path(absolute_path))
     if isfile(absolute_path):
         convert_unicode_file(absolute_path, filename)
     else:
@@ -22,6 +25,12 @@ def convert_unicode_file(absolute_path: str, filename: str) -> None:
         print(f'Corrected file {filename}')
     except UnicodeDecodeError:
         print(f'Ignoring file {filename}')
+
+
+def directory_path(absolute_path: str) -> str:
+    for (path, _, filenames) in walk(absolute_path):
+        for filename in filenames:
+            return join(path, filename)
 
 
 def correct_file(filename: str) -> None:
