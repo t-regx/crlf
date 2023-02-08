@@ -13,7 +13,11 @@ def main(base: str, arguments: list[str]) -> None:
 def convert(parser, absolute_path: str, filename: str) -> None:
     if filename == '':
         parser.error(f"file does not exist '{filename}'")
-        return
+    else:
+        convert_file_or_directory(parser, absolute_path, filename)
+
+
+def convert_file_or_directory(parser, absolute_path: str, filename: str) -> None:
     if isdir(absolute_path):
         correct_file(directory_path(absolute_path))
     if isfile(absolute_path):
