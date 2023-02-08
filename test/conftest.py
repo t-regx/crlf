@@ -46,8 +46,8 @@ def test_has_marker(item: Item, mark: Mark) -> bool:
 
 
 @fixture(params=[
-    param(MemoryApplication, marks=memory),
-    param(ProcessApplication, marks=[process, mark.slow])
+    param(MemoryApplication, id='in memory: ', marks=memory),
+    param(ProcessApplication, id='own process: ', marks=[process, mark.slow])
 ])
 def application(request: SubRequest) -> Application:
     return request.param()
