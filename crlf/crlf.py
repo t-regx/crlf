@@ -6,11 +6,10 @@ def main(base: str, arguments: list[str]) -> None:
     parser = ArgumentParser('crlf', description='Tool to change line endings of text files')
     parser.add_argument('filename', help='file or directory')
     args = parser.parse_args(arguments)
-    convert(parser, base, args.filename)
+    convert(parser, join(base, args.filename), args.filename)
 
 
-def convert(parser, base: str, filename: str) -> None:
-    absolute_path = join(base, filename)
+def convert(parser, absolute_path: str, filename: str) -> None:
     if isfile(absolute_path):
         correct_file(absolute_path)
         print(f'Corrected file {filename}')
