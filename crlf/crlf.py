@@ -29,11 +29,7 @@ def convert_file_or_directory(parser, absolute_path: str, filename: str) -> None
 
 def convert_directory(absolute_path: str, directory: str) -> None:
     for path, filename in directory_files(absolute_path):
-        try:
-            correct_file(path)
-            print(f'Corrected file {join(directory, filename)}')
-        except UnicodeDecodeError:
-            print(f'Ignoring file {join(directory, filename)}')
+        convert_unicode_file(path, join(directory, filename))
 
 
 def convert_unicode_file(absolute_path: str, filename: str) -> None:
