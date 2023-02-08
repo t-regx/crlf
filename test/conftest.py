@@ -21,12 +21,13 @@
 from _pytest.fixtures import SubRequest
 from pytest import fixture, mark, param
 
-from test.fixture.application import Application, MemoryApplication, ProcessApplication
+from test.fixture.application import MemoryApplication, Application, ProcessApplication
+from test.fixture.pytest.mark import memory, process
 
 
 @fixture(params=[
-    param(MemoryApplication, marks=mark.memory),
-    param(ProcessApplication, marks=[mark.process, mark.slow])
+    param(MemoryApplication, marks=memory),
+    param(ProcessApplication, marks=[process, mark.slow])
 ])
 def application(request: SubRequest) -> Application:
     return request.param()
