@@ -1,5 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
+from test.fixture.pytest.mark import memoryonly
 
 
 def test_convert_crlf_to_lf(application: Application):
@@ -30,6 +31,18 @@ def test_convert_crlf_to_lf_log_output(application: Application):
         output = application.run(dir(), ['file.txt'])
     # then
     assert output.text == "Corrected file file.txt\n"
+
+
+@memoryonly
+def test_invoked_with_empty_filename(application: Application):
+    # given
+    with directory() as dir:
+        # when
+        output = application.run(dir(), [''])
+    # then
+    assert output.error == """usage: crlf [-h] filename
+crlf: error: file does not exist ''
+"""
 
 
 def test_invoked_with_missing_file(application: Application):

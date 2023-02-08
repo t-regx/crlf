@@ -19,10 +19,24 @@
 # Do not rename this file.
 #
 from _pytest.fixtures import SubRequest
-from pytest import fixture, mark, param
+from pytest import fixture, mark, param, Config, Item, Mark
 
 from test.fixture.application import MemoryApplication, Application, ProcessApplication
-from test.fixture.pytest.mark import memory, process
+from test.fixture.pytest.mark import memory, process, memoryonly
+
+
+def pytest_configure(config: Config):
+    config.addinivalue_line("markers", memory.name)
+
+
+def pytest_collection_modifyitems(items: list[Item]):
+    for item in list(items):
+        if test_has_marker(item, memoryonly) and not test_has_marker(item, memory):
+            items.remove(item)
+
+
+def test_has_marker(item: Item, mark: Mark) -> bool:
+    return item.get_closest_marker(mark.name) is not None
 
 
 @fixture(params=[
