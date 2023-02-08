@@ -1,27 +1,21 @@
 from pytest import mark
 
-from crlf.crlf import main
+from test.fixture.application import Application
 
 
-def test(capsys):
+def test(application: Application):
     # when
-    try:
-        main([])
-    except SystemExit:
-        pass
+    output = application.run([])
     # then
-    assert capsys.readouterr().out == ''
+    assert output == ""
 
 
 @mark.parametrize("argument", ['-h', '--help'])
-def test_help(capsys, argument: str):
+def test_help(application: Application, argument: str):
     # when
-    try:
-        main([argument])
-    except SystemExit:
-        pass
+    output = application.run([argument])
     # then
-    assert capsys.readouterr().out == """usage: crlf [-h]
+    assert output == """usage: crlf [-h]
 
 Tool to change line endings of text files
 
