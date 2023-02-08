@@ -94,3 +94,26 @@ def test_convert_crlf_to_lf_directory_log_output(application: Application):
         output = application.run(dir(), ['directory'])
     # then
     assert output.text == "Corrected file directory\\file1.txt\n"
+
+
+def test_convert_crlf_to_lf_directory_many(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/file1.txt', "line\r\nline")
+        dir.store('directory/file2.txt', "line\r\nline")
+        # when
+        application.run(dir(), ['directory'])
+        # then
+        assert dir.open('directory/file1.txt') == "line\nline"
+        assert dir.open('directory/file2.txt') == "line\nline"
+
+
+def test_convert_crlf_to_lf_directory_many_log_output(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/file1.txt', "line\r\nline")
+        dir.store('directory/file2.txt', "line\r\nline")
+        # when
+        output = application.run(dir(), ['directory'])
+    # then
+    assert output.text == "Corrected file directory\\file1.txt\nCorrected file directory\\file2.txt\n"

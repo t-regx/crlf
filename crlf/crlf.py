@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
-from os.path import isfile, join, isdir
 from os import walk
+from os.path import isfile, join, isdir
+from typing import Generator
 
 
 def main(base: str, arguments: list[str]) -> None:
@@ -19,9 +20,9 @@ def convert(parser, absolute_path: str, filename: str) -> None:
 
 def convert_file_or_directory(parser, absolute_path: str, filename: str) -> None:
     if isdir(absolute_path):
-        path, file = directory_path(absolute_path)
-        correct_file(path)
-        print(f'Corrected file {join(filename, file)}')
+        for dir_path, dir_filename in directory_files(absolute_path):
+            correct_file(dir_path)
+            print(f'Corrected file {join(filename, dir_filename)}')
     elif isfile(absolute_path):
         convert_unicode_file(absolute_path, filename)
     else:
@@ -36,10 +37,10 @@ def convert_unicode_file(absolute_path: str, filename: str) -> None:
         print(f'Ignoring file {filename}')
 
 
-def directory_path(absolute_path: str) -> tuple[str, str]:
+def directory_files(absolute_path: str) -> Generator:
     for (path, _, filenames) in walk(absolute_path):
         for filename in filenames:
-            return join(path, filename), filename
+            yield join(path, filename), filename
 
 
 def correct_file(filename: str) -> None:
