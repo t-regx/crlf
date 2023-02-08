@@ -22,7 +22,10 @@ class Handle:
         self.test_dir = test_dir
 
     def store(self, filename: str, content: Union[str, bytes]):
-        self.__store_bytes(filename, bytes(content, 'utf-8'))
+        if type(content) is str:
+            self.__store_bytes(filename, bytes(content, 'utf-8'))
+        else:
+            self.__store_bytes(filename, content)
 
     def __store_bytes(self, filename: str, bytes_: bytes):
         folder, _ = os.path.split(self.join(filename))
@@ -34,6 +37,10 @@ class Handle:
     def open(self, filenames: str) -> str:
         with open(self.join(filenames), 'rb') as file:
             return str(file.read(), 'utf-8')
+
+    def open_bytes(self, *filenames: str) -> bytes:
+        with open(self.join(*filenames), 'rb') as file:
+            return file.read()
 
     def __call__(self, *args, **kwargs) -> str:
         return self.join(*args)
