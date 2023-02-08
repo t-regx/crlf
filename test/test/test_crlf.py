@@ -84,3 +84,13 @@ def test_convert_crlf_to_lf_directory(application: Application):
         application.run(dir(), ['directory'])
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
+
+
+def test_convert_crlf_to_lf_directory_no_error(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/file1.txt', "line\r\nline")
+        # when
+        output = application.run(dir(), ['directory'])
+    # then
+    assert output.error == ''

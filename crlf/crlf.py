@@ -20,7 +20,7 @@ def convert(parser, absolute_path: str, filename: str) -> None:
 def convert_file_or_directory(parser, absolute_path: str, filename: str) -> None:
     if isdir(absolute_path):
         correct_file(directory_path(absolute_path))
-    if isfile(absolute_path):
+    elif isfile(absolute_path):
         convert_unicode_file(absolute_path, filename)
     else:
         parser.error(f"file does not exist '{filename}'")
