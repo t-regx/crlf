@@ -8,34 +8,35 @@ def main(base: str, arguments: list[str]) -> None:
     parser = ArgumentParser('crlf', description='Tool to change line endings of text files')
     parser.add_argument('filename', help='file or directory')
     args = parser.parse_args(arguments)
-    convert(parser, join(base, args.filename), args.filename)
+    convert(parser, base, args.filename)
 
 
-def convert(parser, absolute_path: str, filename: str) -> None:
+def convert(parser, base: str, filename: str) -> None:
     if filename == '':
         parser.error(f"file does not exist '{filename}'")
     else:
-        convert_file_or_directory(parser, absolute_path, filename)
+        convert_file_or_directory(parser, base, filename)
 
 
-def convert_file_or_directory(parser, absolute_path: str, filename: str) -> None:
+def convert_file_or_directory(parser, base: str, filename: str) -> None:
+    absolute_path = join(base, filename)
     if isdir(absolute_path):
-        convert_directory(absolute_path, directory=filename)
+        convert_directory(base, directory=filename)
     elif isfile(absolute_path):
-        convert_unicode_file(absolute_path, filename)
+        convert_unicode_file(base, filename)
     else:
         parser.error(f"file does not exist '{filename}'")
 
 
-def convert_directory(absolute_path: str, directory: str) -> None:
-    for path, filename in directory_files(absolute_path):
-        convert_unicode_file(path, join(directory, filename))
+def convert_directory(base: str, directory: str) -> None:
+    for path, filename in directory_files(join(base, directory)):
+        convert_unicode_file(base, join(directory, filename))
 
 
-def convert_unicode_file(absolute_path: str, filename: str) -> None:
+def convert_unicode_file(base: str, filename: str) -> None:
     name = normpath(filename)
     try:
-        correct_file(absolute_path)
+        correct_file(join(base, filename))
         print(f'Corrected file {name}')
     except UnicodeDecodeError:
         print(f'Ignoring file {name}')
