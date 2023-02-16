@@ -7,6 +7,7 @@ from typing import Iterator
 def main(base: str, arguments: list[str]) -> None:
     parser = ArgumentParser('crlf', description='Tool to change line endings of text files')
     parser.add_argument('filename', help='file or directory')
+    parser.add_argument('-R', help='recurse into nested directories', action='store_true')
     args = parser.parse_args(arguments)
     convert(parser, base, args.filename)
 
