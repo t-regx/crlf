@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from os import walk
+from os import walk, path
 from os.path import isfile, join, isdir
 from typing import Generator
 
@@ -33,11 +33,12 @@ def convert_directory(absolute_path: str, directory: str) -> None:
 
 
 def convert_unicode_file(absolute_path: str, filename: str) -> None:
+    name = filename.replace('/', path.sep)
     try:
         correct_file(absolute_path)
-        print(f'Corrected file {filename}')
+        print(f'Corrected file {name}')
     except UnicodeDecodeError:
-        print(f'Ignoring file {filename}')
+        print(f'Ignoring file {name}')
 
 
 def directory_files(absolute_path: str) -> Generator:

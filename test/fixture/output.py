@@ -5,6 +5,10 @@ class Output:
 
     @property
     def text(self) -> str:
+        return self.output.replace('\\', '/')
+
+    @property
+    def output(self) -> str:
         if self._error == '':
             return self._output
         raise Exception("Tried to read standard output, but there was also error output:\n\n" + self._error)

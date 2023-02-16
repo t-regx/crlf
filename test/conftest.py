@@ -22,6 +22,7 @@ from _pytest.fixtures import SubRequest
 from pytest import fixture, mark, param, Parser, Config, Item, Mark
 
 from test.fixture.application import MemoryApplication, Application, ProcessApplication
+from test.fixture.pathseparator import PathSeparator, path_separator
 from test.fixture.pytest.mark import memory, process, memoryonly
 
 
@@ -51,3 +52,8 @@ def test_has_marker(item: Item, mark: Mark) -> bool:
 ])
 def application(request: SubRequest) -> Application:
     return request.param()
+
+
+@fixture
+def separator() -> PathSeparator:
+    return path_separator
