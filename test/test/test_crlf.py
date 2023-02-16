@@ -180,3 +180,14 @@ def test_not_convert_crlf_directory_log_output(application: Application):
         output = application.run(dir(), ['one'])
     # then
     assert output.text == ""
+
+
+def test_fail_for_unrecognized_option(application: Application):
+    # given
+    with directory() as dir:
+        # when
+        output = application.run(dir(), ['--invalid', 'foo'])
+    # then
+    assert output.error == """usage: crlf [-h] filename
+crlf: error: unrecognized arguments: --invalid
+"""
