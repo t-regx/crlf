@@ -191,3 +191,14 @@ def test_fail_for_unrecognized_option(application: Application):
     assert output.error == """usage: crlf [-h] filename
 crlf: error: unrecognized arguments: --invalid
 """
+
+
+def test_fail_for_unrecognized_switch(application: Application):
+    # given
+    with directory() as dir:
+        # when
+        output = application.run(dir(), ['-X', 'foo'])
+    # then
+    assert output.error == """usage: crlf [-h] filename
+crlf: error: unrecognized arguments: -X
+"""
