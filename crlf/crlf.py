@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
-from os import walk, path
-from os.path import isfile, join, isdir
+from os import walk
+from os.path import isfile, join, isdir, normpath
 from typing import Generator
 
 
@@ -33,7 +33,7 @@ def convert_directory(absolute_path: str, directory: str) -> None:
 
 
 def convert_unicode_file(absolute_path: str, filename: str) -> None:
-    name = filename.replace('/', path.sep)
+    name = normpath(filename)
     try:
         correct_file(absolute_path)
         print(f'Corrected file {name}')
