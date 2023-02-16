@@ -41,9 +41,9 @@ def convert_unicode_file(absolute_path: str, filename: str) -> None:
 
 
 def directory_files(absolute_path: str) -> Generator:
-    for (path, _, filenames) in walk(absolute_path):
-        for filename in filenames:
-            yield join(path, filename), filename
+    path, _, filenames = next(walk(absolute_path))
+    for filename in filenames:
+        yield join(path, filename), filename
 
 
 def correct_file(filename: str) -> None:

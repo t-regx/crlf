@@ -119,7 +119,7 @@ def test_convert_crlf_to_lf_directory_many_log_output(application: Application):
     assert output.text == "Corrected file directory\\file1.txt\nCorrected file directory\\file2.txt\n"
 
 
-def test_convert_crlf_to_lf_directory_nested(application: Application):
+def test_convert_crlf_to_lf_subdirectory(application: Application):
     # given
     with directory() as dir:
         dir.store('one/two/file1.txt', "line\r\nline")
@@ -131,7 +131,7 @@ def test_convert_crlf_to_lf_directory_nested(application: Application):
         assert dir.open('one/two/file2.txt') == "line\nline"
 
 
-def test_convert_crlf_to_lf_directory_nested_log_output(application: Application):
+def test_convert_crlf_to_lf_subdirectory_log_output(application: Application):
     # given
     with directory() as dir:
         dir.store('one/two/file1.txt', "line\r\nline")
@@ -160,3 +160,23 @@ def test_ignore_directory_with_improper_encoding_log_output(application: Applica
         output = application.run(dir(), ['directory'])
     # then
     assert output.text == "Ignoring file directory\\improper.txt\n"
+
+
+def test_not_convert_nested_directory(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('one/two/file.txt', "line\r\n")
+        # when
+        application.run(dir(), ['one'])
+        # then
+        assert dir.open('one/two/file.txt') == "line\r\n"
+
+
+def test_not_convert_crlf_directory_log_output(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('one/two/file.txt', "line\r\n")
+        # when
+        output = application.run(dir(), ['one'])
+    # then
+    assert output.text == ""
