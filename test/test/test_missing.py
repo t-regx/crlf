@@ -36,7 +36,7 @@ def test_invoked_with_missing_file_relative_path(application: Application):
     # given
     with directory('directory') as dir:
         # when
-        output = application.run(dir(), ['../one/../missing.txt'])
+        output = application.run(dir(), ['../not-this/../missing.txt'])
     # then
     assert output.error == error("file does not exist '../missing.txt'")
 
@@ -45,6 +45,6 @@ def test_invoked_with_missing_file_current_relative_path(application: Applicatio
     # given
     with directory('directory') as dir:
         # when
-        output = application.run(dir(), ['../one/./missing.txt'])
+        output = application.run(dir(), ['../child/./missing.txt'])
     # then
-    assert output.error == error("file does not exist '../one/missing.txt'")
+    assert output.error == error("file does not exist '../child/missing.txt'")

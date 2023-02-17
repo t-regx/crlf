@@ -73,9 +73,9 @@ def test_crlf_parent_directory_recurse(application: Application):
 def test_crlf_parent_and_relative(application: Application):
     # given
     with directory('directory') as dir:
-        dir.store('one/file.txt', "line\r\n")
+        dir.store('child/file.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['../directory/one/../one/file.txt'])
+        output = application.run(dir(), ['../directory/child/../child/file.txt'])
         # then
-        assert dir.open('one/file.txt') == "line\n"
-        assert output.text == "Updated: ../directory/one/file.txt\n"
+        assert dir.open('child/file.txt') == "line\n"
+        assert output.text == "Updated: ../directory/child/file.txt\n"

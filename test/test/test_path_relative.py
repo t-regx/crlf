@@ -5,17 +5,17 @@ from test.fixture.directory import directory
 
 
 @mark.parametrize("path", [
-    "one/../one/../one/file.txt",
-    "one/../one/file.txt",
-    "one/./file.txt",
-    "one//file.txt"
+    "directory/../directory/../directory/file.txt",
+    "directory/../directory/file.txt",
+    "directory/./file.txt",
+    "directory//file.txt"
 ])
 def test_reline_relative_path(application: Application, path: str):
     # given
     with directory() as dir:
-        dir.store('one/file.txt', "line\r\n")
+        dir.store('directory/file.txt', "line\r\n")
         # when
         output = application.run(dir(), [path])
         # then
-        assert dir.open('one/file.txt') == "line\n"
-        assert output.text == "Updated: one/file.txt\n"
+        assert dir.open('directory/file.txt') == "line\n"
+        assert output.text == "Updated: directory/file.txt\n"

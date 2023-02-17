@@ -16,12 +16,12 @@ def test_crlf_absolute_path(application: Application):
 def test_crlf_absolute_path_directory(application: Application):
     # given
     with directory() as dir:
-        dir.store('one/file.txt', "line\r\n")
+        dir.store('directory/file.txt', "line\r\n")
         # when
-        output = application.run(dir(), [dir('one')])
+        output = application.run(dir(), [dir('directory')])
         # then
-        assert dir.open('one/file.txt') == "line\n"
-        assert output.text == f"Updated: {dir('one/file.txt')}\n"
+        assert dir.open('directory/file.txt') == "line\n"
+        assert output.text == f"Updated: {dir('directory/file.txt')}\n"
 
 
 def test_crlf_absolute_path_directory_recurse(application: Application):

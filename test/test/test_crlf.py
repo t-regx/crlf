@@ -17,11 +17,11 @@ def test_reline_crlf_to_lf(application: Application):
 def test_reline_crlf_to_lf_multiline(application: Application):
     # given
     with directory() as dir:
-        dir.store('file.txt', "one\r\ntwo\r\n")
+        dir.store('file.txt', "first\r\nsecond\r\n")
         # when
         application.run(dir(), ['file.txt'])
         # then
-        assert dir.open('file.txt') == "one\ntwo\n"
+        assert dir.open('file.txt') == "first\nsecond\n"
 
 
 def test_ignore_file_with_improper_encoding(application: Application):
