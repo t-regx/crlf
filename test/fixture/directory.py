@@ -4,13 +4,19 @@ from tempfile import mkdtemp
 from typing import Union
 
 
-def directory():
-    return TemporaryDirectory()
+def directory(name: str = None):
+    return TemporaryDirectory(name)
 
 
 class TemporaryDirectory:
+    def __init__(self, name: str = None) -> None:
+        self._name = name
+
     def __enter__(self):
         self.test_dir = mkdtemp()
+        if self._name is not None:
+            self.test_dir = os.path.join(self.test_dir, self._name)
+            os.mkdir(self.test_dir)
         return Handle(self.test_dir)
 
     def __exit__(self, exc_type, exc_val, exc_tb):

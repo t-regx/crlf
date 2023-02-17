@@ -22,3 +22,14 @@ def test_crlf_absolute_path_directory(application: Application):
         # then
         assert dir.open('one/file.txt') == "line\n"
         assert output.text == f"Corrected file {dir('one/file.txt')}\n"
+
+
+def test_crlf_absolute_path_directory_recurse(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('one/two/file.txt', "line\r\n")
+        # when
+        output = application.run(dir(), ['-R', dir('one')])
+        # then
+        assert dir.open('one/two/file.txt') == "line\n"
+        assert output.text == f"Corrected file {dir('one/two/file.txt')}\n"
