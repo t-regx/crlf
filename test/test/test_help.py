@@ -2,6 +2,7 @@ from pytest import mark
 
 from test.fixture.application import Application
 from test.fixture.directory import directory
+from test.fixture.usage import error
 
 
 def test_invoked_without_arguments(application: Application):
@@ -10,9 +11,7 @@ def test_invoked_without_arguments(application: Application):
         # when
         output = application.run(dir(), [])
     # then
-    assert output.error == """usage: crlf [-h] [-V] [-R] filename
-crlf: error: the following arguments are required: filename
-"""
+    assert output.error == error('the following arguments are required: filename')
 
 
 @mark.parametrize("argument", ['-h', '--help'])

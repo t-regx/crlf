@@ -1,6 +1,7 @@
 from test.conftest import Application
 from test.fixture.directory import directory
 from test.fixture.pytest.mark import memoryonly
+from test.fixture.usage import error
 
 
 def test_reline_crlf_to_lf(application: Application):
@@ -40,9 +41,7 @@ def test_invoked_with_empty_filename(application: Application):
         # when
         output = application.run(dir(), [''])
     # then
-    assert output.error == """usage: crlf [-h] [-V] [-R] filename
-crlf: error: file does not exist ''
-"""
+    assert output.error == error("file does not exist ''")
 
 
 def test_invoked_with_missing_file(application: Application):
@@ -51,9 +50,7 @@ def test_invoked_with_missing_file(application: Application):
         # when
         output = application.run(dir(), ['missing.txt'])
     # then
-    assert output.error == """usage: crlf [-h] [-V] [-R] filename
-crlf: error: file does not exist 'missing.txt'
-"""
+    assert output.error == error("file does not exist 'missing.txt'")
 
 
 def test_ignore_file_with_improper_encoding(application: Application):
@@ -188,9 +185,7 @@ def test_fail_for_unrecognized_option(application: Application):
         # when
         output = application.run(dir(), ['--invalid', 'foo'])
     # then
-    assert output.error == """usage: crlf [-h] [-V] [-R] filename
-crlf: error: unrecognized arguments: --invalid
-"""
+    assert output.error == error('unrecognized arguments: --invalid')
 
 
 def test_fail_for_unrecognized_switch(application: Application):
@@ -199,6 +194,4 @@ def test_fail_for_unrecognized_switch(application: Application):
         # when
         output = application.run(dir(), ['-X', 'foo'])
     # then
-    assert output.error == """usage: crlf [-h] [-V] [-R] filename
-crlf: error: unrecognized arguments: -X
-"""
+    assert output.error == error('unrecognized arguments: -X')

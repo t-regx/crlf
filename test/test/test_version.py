@@ -1,5 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
+from test.fixture.usage import error
 
 
 def test_version_option(application: Application):
@@ -26,6 +27,4 @@ def test_disallow_abbreviation(application: Application):
         # when
         output = application.run(dir(), ['--ver'])
     # then
-    assert output.error == """usage: crlf [-h] [-V] [-R] filename
-crlf: error: the following arguments are required: filename
-"""
+    assert output.error == error("the following arguments are required: filename")
