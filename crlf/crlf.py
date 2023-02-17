@@ -10,40 +10,38 @@ def main(base: str, arguments: list[str]) -> None:
     convert(parser, base, args.filename)
 
 
-def convert(parser, base: str, filename: str) -> None:
-    if filename == '':
-        parser.error(f"file does not exist '{filename}'")
-    else:
-        convert_file_or_directory(parser, base, filename)
+def convert(parser, base: str, path: str) -> None:
+    if path == '':
+        parser.error(f"file does not exist '{path}'")
+    convert_file_or_directory(parser, base, path)
 
 
-def convert_file_or_directory(parser, base: str, filename: str) -> None:
-    absolute_path = join(base, filename)
+def convert_file_or_directory(parser, base: str, path: str) -> None:
+    absolute_path = join(base, path)
     if isdir(absolute_path):
-        convert_directory(base, directory=filename)
+        convert_directory(base, path)
     elif isfile(absolute_path):
-        convert_unicode_file(base, filename)
+        convert_unicode_file(base, path)
     else:
-        parser.error(f"file does not exist '{filename}'")
+        parser.error(f"file does not exist '{path}'")
 
 
-def convert_directory(base: str, directory: str) -> None:
-    for filename in directory_files(join(base, directory)):
-        convert_unicode_file(base, join(directory, filename))
+def convert_directory(base: str, path: str) -> None:
+    for filename in directory_files(base, path):
+        convert_unicode_file(base, join(path, filename))
 
 
-def directory_files(absolute_path: str) -> list[str]:
-    _, _, filenames = next(walk(absolute_path))
+def directory_files(base: str, path: str) -> list[str]:
+    _, _, filenames = next(walk(join(base, path)))
     return filenames
 
 
-def convert_unicode_file(base: str, filename: str) -> None:
-    name = normpath(filename)
+def convert_unicode_file(base: str, path: str) -> None:
     try:
-        correct_file(join(base, filename))
-        print(f'Corrected file {name}')
+        correct_file(join(base, path))
+        print(f'Corrected file {normpath(path)}')
     except UnicodeDecodeError:
-        print(f'Ignoring file {name}')
+        print(f'Ignoring file {normpath(path)}')
 
 
 def correct_file(filename: str) -> None:
