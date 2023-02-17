@@ -36,8 +36,7 @@ def reline_file_or_directory(parser, base: str, path: str, recurse: bool) -> Non
     elif isfile(absolute_path):
         reline_unicode_file(base, path)
     else:
-        norm = path.replace('\\', os.sep).replace('/', os.sep)
-        parser.error(f"file does not exist '{norm}'")
+        parser.error(f"file does not exist '{normpath(path)}'")
 
 
 def reline_directory(base: str, path: str, recurse: bool) -> None:

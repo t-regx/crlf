@@ -13,7 +13,7 @@ def test_crlf_backslash(application: Application):
         # when
         output = application.run(dir(), ['one/file.txt'])
     # then
-    assert output.output == r"Updated: one\file.txt" + "\n"
+    assert output.output_text == r"Updated: one\file.txt" + "\n"
 
 
 def test_crlf_output_system_separator(application: Application, separator: PathSeparator):
@@ -24,9 +24,9 @@ def test_crlf_output_system_separator(application: Application, separator: PathS
         output = application.run(dir(), ['one/file.txt'])
     # then
     if separator.forward:
-        assert output.output == "Updated: one/file.txt\n"
+        assert output.output_text == "Updated: one/file.txt\n"
     else:
-        assert output.output == "Updated: one\\file.txt\n"
+        assert output.output_text == "Updated: one\\file.txt\n"
 
 
 def test_ignore_output_system_separator(application: Application, separator: PathSeparator):
@@ -37,11 +37,11 @@ def test_ignore_output_system_separator(application: Application, separator: Pat
         output = application.run(dir(), ['one/file.txt'])
     # then
     if separator.forward:
-        assert output.output == """Failed:  one/file.txt
+        assert output.output_text == """Failed:  one/file.txt
          ^ ! expected unicode encoding, malformed encoding found
 """
     else:
-        assert output.output == r"""Failed:  one\file.txt
+        assert output.output_text == r"""Failed:  one\file.txt
          ^ ! expected unicode encoding, malformed encoding found
 """
 
@@ -53,10 +53,10 @@ def test_crlf_output_system_separator_missing(application: Application, separato
         output = application.run(dir(), ['one/missing.txt'])
     # then
     if separator.forward:
-        assert output.error == """usage: crlf [-h] [-V] [-R] filename
+        assert output.output_error == """usage: crlf [-h] [-V] [-R] filename
 crlf: error: file does not exist 'one/missing.txt'
 """
     else:
-        assert output.error == r"""usage: crlf [-h] [-V] [-R] filename
+        assert output.output_error == r"""usage: crlf [-h] [-V] [-R] filename
 crlf: error: file does not exist 'one\missing.txt'
 """
