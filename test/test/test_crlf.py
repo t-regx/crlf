@@ -9,9 +9,10 @@ def test_reline_crlf_to_lf(application: Application):
     with directory() as dir:
         dir.store('file.txt', "line\r\n")
         # when
-        application.run(dir(), ['file.txt'])
+        output = application.run(dir(), ['file.txt'])
         # then
         assert dir.open('file.txt') == "line\n"
+        assert output.text == "Updated: file.txt\n"
 
 
 def test_reline_crlf_to_lf_multiline(application: Application):
@@ -22,16 +23,6 @@ def test_reline_crlf_to_lf_multiline(application: Application):
         application.run(dir(), ['file.txt'])
         # then
         assert dir.open('file.txt') == "one\ntwo\n"
-
-
-def test_reline_crlf_to_lf_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('file.txt', 'line')
-        # when
-        output = application.run(dir(), ['file.txt'])
-    # then
-    assert output.text == "Updated: file.txt\n"
 
 
 @memoryonly
@@ -58,19 +49,10 @@ def test_ignore_file_with_improper_encoding(application: Application):
     with directory() as dir:
         dir.store('improper.txt', b'\x1f\x7f\xee \x0d\x0a')
         # when
-        application.run(dir(), ['improper.txt'])
+        output = application.run(dir(), ['improper.txt'])
         # then
         assert dir.open_bytes('improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
-
-
-def test_ignore_file_with_improper_encoding_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('improper.txt', b'\x1f\x7f\xee')
-        # when
-        output = application.run(dir(), ['improper.txt'])
-    # then
-    assert output.text == """Failed:  improper.txt
+        assert output.text == """Failed:  improper.txt
          ^ ! expected unicode encoding, malformed encoding found
 """
 
@@ -80,19 +62,10 @@ def test_reline_crlf_to_lf_directory(application: Application):
     with directory() as dir:
         dir.store('directory/file1.txt', "line\r\nline")
         # when
-        application.run(dir(), ['directory'])
+        output = application.run(dir(), ['directory'])
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
-
-
-def test_reline_crlf_to_lf_directory_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('directory/file1.txt', 'line')
-        # when
-        output = application.run(dir(), ['directory'])
-    # then
-    assert output.text == "Updated: directory/file1.txt\n"
+        assert output.text == "Updated: directory/file1.txt\n"
 
 
 def test_reline_crlf_to_lf_directory_many(application: Application):
@@ -101,21 +74,11 @@ def test_reline_crlf_to_lf_directory_many(application: Application):
         dir.store('directory/file1.txt', "line\r\nline")
         dir.store('directory/file2.txt', "line\r\nline")
         # when
-        application.run(dir(), ['directory'])
+        output = application.run(dir(), ['directory'])
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
         assert dir.open('directory/file2.txt') == "line\nline"
-
-
-def test_reline_crlf_to_lf_directory_many_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('directory/file1.txt', "line\r\nline")
-        dir.store('directory/file2.txt', "line\r\nline")
-        # when
-        output = application.run(dir(), ['directory'])
-    # then
-    assert output.text == "Updated: directory/file1.txt\nUpdated: directory/file2.txt\n"
+        assert output.text == "Updated: directory/file1.txt\nUpdated: directory/file2.txt\n"
 
 
 def test_reline_crlf_to_lf_subdirectory(application: Application):
@@ -124,21 +87,11 @@ def test_reline_crlf_to_lf_subdirectory(application: Application):
         dir.store('one/two/file1.txt', "line\r\nline")
         dir.store('one/two/file2.txt', "line\r\nline")
         # when
-        application.run(dir(), ['one/two'])
+        output = application.run(dir(), ['one/two'])
         # then
         assert dir.open('one/two/file1.txt') == "line\nline"
         assert dir.open('one/two/file2.txt') == "line\nline"
-
-
-def test_reline_crlf_to_lf_subdirectory_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('one/two/file1.txt', "line\r\nline")
-        dir.store('one/two/file2.txt', "line\r\nline")
-        # when
-        output = application.run(dir(), ['one/two'])
-    # then
-    assert output.text == "Updated: one/two/file1.txt\nUpdated: one/two/file2.txt\n"
+        assert output.text == "Updated: one/two/file1.txt\nUpdated: one/two/file2.txt\n"
 
 
 def test_ignore_directory_with_improper_encoding(application: Application):
@@ -146,19 +99,10 @@ def test_ignore_directory_with_improper_encoding(application: Application):
     with directory() as dir:
         dir.store('directory/improper.txt', b'\x1f\x7f\xee \x0d\x0a')
         # when
-        application.run(dir(), ['directory'])
+        output = application.run(dir(), ['directory'])
         # then
         assert dir.open_bytes('directory/improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
-
-
-def test_ignore_directory_with_improper_encoding_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('directory/improper.txt', b'\x1f\x7f\xee')
-        # when
-        output = application.run(dir(), ['directory'])
-    # then
-    assert output.text == """Failed:  directory/improper.txt
+        assert output.text == """Failed:  directory/improper.txt
          ^ ! expected unicode encoding, malformed encoding found
 """
 
@@ -168,19 +112,10 @@ def test_not_reline_nested_directory(application: Application):
     with directory() as dir:
         dir.store('one/two/file.txt', "line\r\n")
         # when
-        application.run(dir(), ['one'])
+        output = application.run(dir(), ['one'])
         # then
         assert dir.open('one/two/file.txt') == "line\r\n"
-
-
-def test_not_reline_crlf_directory_log_output(application: Application):
-    # given
-    with directory() as dir:
-        dir.store('one/two/file.txt', "line\r\n")
-        # when
-        output = application.run(dir(), ['one'])
-    # then
-    assert output.text == ""
+        assert output.text == ""
 
 
 def test_fail_for_unrecognized_option(application: Application):
