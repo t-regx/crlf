@@ -2,7 +2,7 @@ import sys
 from abc import abstractmethod, ABC
 from io import StringIO
 
-from crlf.crlf import main
+from crlf.reline import main
 from test.fixture.output import Output
 from test.fixture.subprocess import completed_process
 

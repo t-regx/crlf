@@ -1,7 +1,7 @@
 from os import getcwd
 from sys import argv
 
-from crlf.crlf import main
+from crlf.reline import main
 
 
 def start():

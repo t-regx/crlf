@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from os.path import isfile, join, isdir, normpath, isabs
 from typing import Iterator
 
-from . import __version__
+from crlf import __version__
 
 
 def main(base: str, arguments: list[str]) -> None:
