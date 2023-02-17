@@ -10,7 +10,7 @@ def test_ignore_crlf_file(application: Application):
         # when
         output = application.run(dir(), ['file.txt'])
     # then
-    assert output.text == ignored(['file.txt'])
+    assert output.text == ignored(['file.txt'], 'lf')
 
 
 def test_ignore_crlf_file_absolute_path(application: Application):
@@ -20,7 +20,7 @@ def test_ignore_crlf_file_absolute_path(application: Application):
         # when
         output = application.run(dir(), [dir('file.txt')])
     # then
-    assert output.text == ignored([dir('file.txt')])
+    assert output.text == ignored([dir('file.txt')], 'lf')
 
 
 def test_ignore_crlf_file_parent_path(application: Application):
@@ -31,7 +31,7 @@ def test_ignore_crlf_file_parent_path(application: Application):
         # when
         output = application.run(dir('root'), ['../file.txt'])
     # then
-    assert output.text == ignored(['../file.txt'])
+    assert output.text == ignored(['../file.txt'], 'lf')
 
 
 def test_ignore_crlf_file_relative_path(application: Application):
@@ -42,7 +42,7 @@ def test_ignore_crlf_file_relative_path(application: Application):
         # when
         output = application.run(dir('root'), ['../not-this/../folder/file.txt'])
     # then
-    assert output.text == ignored(['../folder/file.txt'])
+    assert output.text == ignored(['../folder/file.txt'], 'lf')
 
 
 def test_ignore_crlf_file_relative_path_file_current(application: Application):
@@ -53,7 +53,7 @@ def test_ignore_crlf_file_relative_path_file_current(application: Application):
         # when
         output = application.run(dir('root'), ['../folder/./file.txt'])
     # then
-    assert output.text == ignored(['../folder/file.txt'])
+    assert output.text == ignored(['../folder/file.txt'], 'lf')
 
 
 def test_ignore_crlf_directory(application: Application):
@@ -64,4 +64,4 @@ def test_ignore_crlf_directory(application: Application):
         # when
         output = application.run(dir(), ['directory'])
     # then
-    assert output.text == ignored(["directory/file1.txt", "directory/file2.txt"])
+    assert output.text == ignored(["directory/file1.txt", "directory/file2.txt"], 'lf')

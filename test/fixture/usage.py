@@ -12,17 +12,17 @@ def updated(filenames: list[str]) -> str:
     return ''.join([f"Updated: {filename}\n" for filename in filenames]) + summary(updated=len(filenames))
 
 
-def ignored(filenames: list[str]) -> str:
-    return ''.join([_ignored(filename) for filename in filenames]) + summary(ignored=len(filenames))
+def ignored(filenames: list[str], destination: str) -> str:
+    return ''.join([_ignored(filename, destination) for filename in filenames]) + summary(ignored=len(filenames))
 
 
 def malformed(filenames: list[str]) -> str:
     return ''.join([_malformed(filename) for filename in filenames]) + summary(malformed=len(filenames))
 
 
-def _ignored(filename: str) -> str:
+def _ignored(filename: str, destination: str) -> str:
     return f"""Ignored: {filename}
-         ^ file already has LF line endings
+         ^ file already has {destination.upper()} line endings
 """
 
 

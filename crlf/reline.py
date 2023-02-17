@@ -59,7 +59,7 @@ def reline_file(base: str, path: str, info: Info) -> None:
             return
         replace = content.replace("\r", "")
         if replace == content:
-            info.already_relined(normpath(path))
+            info.already_relined(normpath(path), 'lf')
         else:
             file.write(bytes(replace, 'utf-8'))
             file.truncate()

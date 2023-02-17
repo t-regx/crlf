@@ -13,7 +13,7 @@ class Info(ABC):
     def malformed_encoding(self, path: str) -> None:
         self._malformed += 1
 
-    def already_relined(self, path: str) -> None:
+    def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1
 
     def summary(self) -> None:
@@ -42,7 +42,7 @@ class StandardInfo(Info):
         print('Failed:  ' + path)
         print('         ^ ! expected unicode encoding, malformed encoding found')
 
-    def already_relined(self, path: str) -> None:
+    def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1
-        print('Ignored: ' + path)
-        print('         ^ file already has LF line endings')
+        print(f'Ignored: {path}')
+        print(f'         ^ file already has {destination.upper()} line endings')
