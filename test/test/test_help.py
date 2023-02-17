@@ -26,7 +26,7 @@ def test_help(application: Application, argument: str):
 Tool to change line endings of text files
 
 positional arguments:
-  filename       file or directory
+  filename       path to a file or directory
 
 options:
   -h, --help     show this help message

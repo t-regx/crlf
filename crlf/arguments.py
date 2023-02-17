@@ -10,7 +10,7 @@ def parsed_arguments(base: str, arguments: list[str]) -> tuple[str, bool]:
         description='Tool to change line endings of text files',
         add_help=False,
         allow_abbrev=False)
-    parser.add_argument('filename', help='file or directory')
+    parser.add_argument('filename', help='path to a file or directory')
     parser.add_argument('-h', '--help', help='show this help message', action='help')
     parser.add_argument('-V', '--version', help='show version', action='version', version=__version__)
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
