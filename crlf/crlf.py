@@ -18,30 +18,30 @@ def main(base: str, arguments: list[str]) -> None:
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
     args = parser.parse_args(arguments)
     if isabs(args.filename):
-        convert(parser, '', args.filename, args.recurse)
+        reline(parser, '', args.filename, args.recurse)
     else:
-        convert(parser, base, args.filename, args.recurse)
+        reline(parser, base, args.filename, args.recurse)
 
 
-def convert(parser, base: str, path: str, recurse: bool):
+def reline(parser, base: str, path: str, recurse: bool):
     if path == '':
         parser.error(f"file does not exist '{path}'")
-    convert_file_or_directory(parser, base, path, recurse)
+    reline_file_or_directory(parser, base, path, recurse)
 
 
-def convert_file_or_directory(parser, base: str, path: str, recurse: bool) -> None:
+def reline_file_or_directory(parser, base: str, path: str, recurse: bool) -> None:
     absolute_path = join(base, path)
     if isdir(absolute_path):
-        convert_directory(base, path, recurse)
+        reline_directory(base, path, recurse)
     elif isfile(absolute_path):
-        convert_unicode_file(base, path)
+        reline_unicode_file(base, path)
     else:
         parser.error(f"file does not exist '{path}'")
 
 
-def convert_directory(base: str, path: str, recurse: bool) -> None:
+def reline_directory(base: str, path: str, recurse: bool) -> None:
     for filepath in directory_files(base, path, recurse):
-        convert_unicode_file(base, filepath)
+        reline_unicode_file(base, filepath)
 
 
 def directory_files(base: str, path: str, recurse: bool) -> Iterator[str]:
@@ -63,7 +63,7 @@ def unjoin(base: str, absolute_path: str) -> str:
     return absolute_path[len(base) + 1:]
 
 
-def convert_unicode_file(base: str, path: str) -> None:
+def reline_unicode_file(base: str, path: str) -> None:
     try:
         correct_file(join(base, path))
         print(f'Corrected file {normpath(path)}')

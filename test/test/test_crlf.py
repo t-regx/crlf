@@ -3,7 +3,7 @@ from test.fixture.directory import directory
 from test.fixture.pytest.mark import memoryonly
 
 
-def test_convert_crlf_to_lf(application: Application):
+def test_reline_crlf_to_lf(application: Application):
     # given
     with directory() as dir:
         dir.store('file.txt', "line\r\n")
@@ -13,7 +13,7 @@ def test_convert_crlf_to_lf(application: Application):
         assert dir.open('file.txt') == "line\n"
 
 
-def test_convert_crlf_to_lf_multiline(application: Application):
+def test_reline_crlf_to_lf_multiline(application: Application):
     # given
     with directory() as dir:
         dir.store('file.txt', "one\r\ntwo\r\n")
@@ -23,7 +23,7 @@ def test_convert_crlf_to_lf_multiline(application: Application):
         assert dir.open('file.txt') == "one\ntwo\n"
 
 
-def test_convert_crlf_to_lf_log_output(application: Application):
+def test_reline_crlf_to_lf_log_output(application: Application):
     # given
     with directory() as dir:
         dir.store('file.txt', 'line')
@@ -76,7 +76,7 @@ def test_ignore_file_with_improper_encoding_log_output(application: Application)
     assert output.text == "Ignoring file improper.txt\n"
 
 
-def test_convert_crlf_to_lf_directory(application: Application):
+def test_reline_crlf_to_lf_directory(application: Application):
     # given
     with directory() as dir:
         dir.store('directory/file1.txt', "line\r\nline")
@@ -86,7 +86,7 @@ def test_convert_crlf_to_lf_directory(application: Application):
         assert dir.open('directory/file1.txt') == "line\nline"
 
 
-def test_convert_crlf_to_lf_directory_log_output(application: Application):
+def test_reline_crlf_to_lf_directory_log_output(application: Application):
     # given
     with directory() as dir:
         dir.store('directory/file1.txt', 'line')
@@ -96,7 +96,7 @@ def test_convert_crlf_to_lf_directory_log_output(application: Application):
     assert output.text == "Corrected file directory/file1.txt\n"
 
 
-def test_convert_crlf_to_lf_directory_many(application: Application):
+def test_reline_crlf_to_lf_directory_many(application: Application):
     # given
     with directory() as dir:
         dir.store('directory/file1.txt', "line\r\nline")
@@ -108,7 +108,7 @@ def test_convert_crlf_to_lf_directory_many(application: Application):
         assert dir.open('directory/file2.txt') == "line\nline"
 
 
-def test_convert_crlf_to_lf_directory_many_log_output(application: Application):
+def test_reline_crlf_to_lf_directory_many_log_output(application: Application):
     # given
     with directory() as dir:
         dir.store('directory/file1.txt', "line\r\nline")
@@ -119,7 +119,7 @@ def test_convert_crlf_to_lf_directory_many_log_output(application: Application):
     assert output.text == "Corrected file directory/file1.txt\nCorrected file directory/file2.txt\n"
 
 
-def test_convert_crlf_to_lf_subdirectory(application: Application):
+def test_reline_crlf_to_lf_subdirectory(application: Application):
     # given
     with directory() as dir:
         dir.store('one/two/file1.txt', "line\r\nline")
@@ -131,7 +131,7 @@ def test_convert_crlf_to_lf_subdirectory(application: Application):
         assert dir.open('one/two/file2.txt') == "line\nline"
 
 
-def test_convert_crlf_to_lf_subdirectory_log_output(application: Application):
+def test_reline_crlf_to_lf_subdirectory_log_output(application: Application):
     # given
     with directory() as dir:
         dir.store('one/two/file1.txt', "line\r\nline")
@@ -162,7 +162,7 @@ def test_ignore_directory_with_improper_encoding_log_output(application: Applica
     assert output.text == "Ignoring file directory/improper.txt\n"
 
 
-def test_not_convert_nested_directory(application: Application):
+def test_not_reline_nested_directory(application: Application):
     # given
     with directory() as dir:
         dir.store('one/two/file.txt', "line\r\n")
@@ -172,7 +172,7 @@ def test_not_convert_nested_directory(application: Application):
         assert dir.open('one/two/file.txt') == "line\r\n"
 
 
-def test_not_convert_crlf_directory_log_output(application: Application):
+def test_not_reline_crlf_directory_log_output(application: Application):
     # given
     with directory() as dir:
         dir.store('one/two/file.txt', "line\r\n")

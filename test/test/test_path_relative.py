@@ -10,7 +10,7 @@ from test.fixture.directory import directory
     "one/./file.txt",
     "one//file.txt"
 ])
-def test_convert_relative_path(application: Application, path: str):
+def test_reline_relative_path(application: Application, path: str):
     # given
     with directory() as dir:
         dir.store('one/file.txt', "line\r\n")
