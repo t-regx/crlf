@@ -13,6 +13,8 @@ def main(base: str, arguments: list[str]) -> None:
         reline('', filename, recurse, info)
     else:
         reline(base, filename, recurse, info)
+    if not quiet:
+        print("Done.")
 
 
 def reline(base: str, path: str, recurse: bool, info: Info):

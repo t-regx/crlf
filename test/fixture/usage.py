@@ -4,13 +4,17 @@ crlf: error: {message}
 """
 
 
+def finished() -> str:
+    return 'Done.\n'
+
+
 def updated(filenames: list[str]) -> str:
-    return ''.join([f"Updated: {filename}\n" for filename in filenames])
+    return ''.join([f"Updated: {filename}\n" for filename in filenames]) + finished()
 
 
 def malformed(filenames: list[str]) -> str:
     if len(filenames) == 1:
-        return _malformed(filenames[0])
+        return _malformed(filenames[0]) + finished()
     raise
 
 
@@ -21,7 +25,7 @@ def _malformed(filename: str) -> str:
 
 
 def ignored(filenames: list[str]) -> str:
-    return ''.join([_ignored(filename) for filename in filenames])
+    return ''.join([_ignored(filename) for filename in filenames]) + finished()
 
 
 def _ignored(filename: str) -> str:

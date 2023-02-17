@@ -1,6 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
-from test.fixture.usage import error, updated, malformed
+from test.fixture.usage import error, updated, malformed, finished
 
 
 def test_reline_crlf_to_lf(application: Application):
@@ -91,7 +91,7 @@ def test_not_reline_nested_directory(application: Application):
         output = application.run(dir(), ['one'])
         # then
         assert dir.open('one/two/file.txt') == "line\r\n"
-        assert output.text == ""
+        assert output.text == finished()
 
 
 def test_fail_for_unrecognized_option(application: Application):
