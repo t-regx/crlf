@@ -7,7 +7,11 @@ from . import __version__
 
 
 def main(base: str, arguments: list[str]) -> None:
-    parser = ArgumentParser('crlf', description='Tool to change line endings of text files', add_help=False)
+    parser = ArgumentParser(
+        prog='crlf',
+        description='Tool to change line endings of text files',
+        add_help=False,
+        allow_abbrev=False)
     parser.add_argument('filename', help='file or directory')
     parser.add_argument('-h', '--help', help='show this help message', action='help')
     parser.add_argument('--version', help='show version', action='version', version=__version__)
