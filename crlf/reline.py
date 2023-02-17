@@ -3,7 +3,7 @@ from os.path import isfile, join, isdir, normpath, isabs
 from typing import Iterator
 
 from crlf.arguments import parsed_arguments
-from crlf.info import Info, PrintInfo, QuietInfo
+from crlf.summary import Info, PrintInfo, QuietInfo
 
 
 def main(base: str, arguments: list[str]) -> None:
@@ -13,8 +13,7 @@ def main(base: str, arguments: list[str]) -> None:
         reline('', filename, recurse, info)
     else:
         reline(base, filename, recurse, info)
-    if not quiet:
-        print("Done.")
+    info.summary()
 
 
 def reline(base: str, path: str, recurse: bool, info: Info):
