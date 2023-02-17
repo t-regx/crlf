@@ -1,5 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
+from test.fixture.usage import updated
 
 
 def test_crlf_absolute_path(application: Application):
@@ -10,7 +11,7 @@ def test_crlf_absolute_path(application: Application):
         output = application.run(dir(), [dir('file.txt')])
         # then
         assert dir.open('file.txt') == "line\n"
-        assert output.text == f"Updated: {dir('file.txt')}\n"
+        assert output.text == updated([dir('file.txt')])
 
 
 def test_crlf_absolute_path_directory(application: Application):
@@ -21,7 +22,7 @@ def test_crlf_absolute_path_directory(application: Application):
         output = application.run(dir(), [dir('directory')])
         # then
         assert dir.open('directory/file.txt') == "line\n"
-        assert output.text == f"Updated: {dir('directory/file.txt')}\n"
+        assert output.text == updated([dir('directory/file.txt')])
 
 
 def test_crlf_absolute_path_directory_recurse(application: Application):
@@ -32,4 +33,4 @@ def test_crlf_absolute_path_directory_recurse(application: Application):
         output = application.run(dir(), ['-R', dir('one')])
         # then
         assert dir.open('one/two/file.txt') == "line\n"
-        assert output.text == f"Updated: {dir('one/two/file.txt')}\n"
+        assert output.text == updated([dir('one/two/file.txt')])

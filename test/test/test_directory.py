@@ -1,5 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
+from test.fixture.usage import updated
 
 
 def test_crlf_nested_directory(application: Application):
@@ -11,8 +12,10 @@ def test_crlf_nested_directory(application: Application):
         output = application.run(dir(), ['-R', 'one/two'])
         # then
         assert dir.open('one/two/a/b/file.txt') == "line\n"
-        assert output.text == "Updated: one/two/a/b/file.txt\n" \
-                              "Updated: one/two/c/d/file.txt\n"
+        assert output.text == updated([
+            "one/two/a/b/file.txt",
+            "one/two/c/d/file.txt"
+        ])
 
 
 def test_crlf_nested_directory_trailing_separator(application: Application):
@@ -23,7 +26,7 @@ def test_crlf_nested_directory_trailing_separator(application: Application):
         output = application.run(dir(), ['-R', 'one/two/'])
         # then
         assert dir.open('one/two/three/four/file.txt') == "line\n"
-        assert output.text == "Updated: one/two/three/four/file.txt\n"
+        assert output.text == updated(['one/two/three/four/file.txt'])
 
 
 def test_crlf_nested_directory_trailing_separators(application: Application):
@@ -34,7 +37,7 @@ def test_crlf_nested_directory_trailing_separators(application: Application):
         output = application.run(dir(), ['-R', 'one///'])
         # then
         assert dir.open('one/two/three/four/file.txt') == "line\n"
-        assert output.text == "Updated: one/two/three/four/file.txt\n"
+        assert output.text == updated(['one/two/three/four/file.txt'])
 
 
 def test_crlf_parent(application: Application):
@@ -45,7 +48,7 @@ def test_crlf_parent(application: Application):
         output = application.run(dir(), ['../directory/file.txt'])
         # then
         assert dir.open('file.txt') == "line\n"
-        assert output.text == "Updated: ../directory/file.txt\n"
+        assert output.text == updated(['../directory/file.txt'])
 
 
 def test_crlf_parent_directory(application: Application):
@@ -56,7 +59,7 @@ def test_crlf_parent_directory(application: Application):
         output = application.run(dir(), ['../directory/'])
         # then
         assert dir.open('file.txt') == "line\n"
-        assert output.text == "Updated: ../directory/file.txt\n"
+        assert output.text == updated(['../directory/file.txt'])
 
 
 def test_crlf_parent_directory_recurse(application: Application):
@@ -67,7 +70,7 @@ def test_crlf_parent_directory_recurse(application: Application):
         output = application.run(dir(), ['-R', '../directory/'])
         # then
         assert dir.open('file.txt') == "line\n"
-        assert output.text == "Updated: ../directory/file.txt\n"
+        assert output.text == updated(['../directory/file.txt'])
 
 
 def test_crlf_parent_and_relative(application: Application):
@@ -78,4 +81,4 @@ def test_crlf_parent_and_relative(application: Application):
         output = application.run(dir(), ['../directory/child/../child/file.txt'])
         # then
         assert dir.open('child/file.txt') == "line\n"
-        assert output.text == "Updated: ../directory/child/file.txt\n"
+        assert output.text == updated(['../directory/child/file.txt'])

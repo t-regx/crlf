@@ -1,6 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
-from test.fixture.usage import error
+from test.fixture.usage import error, updated, malformed
 
 
 def test_reline_crlf_to_lf(application: Application):
@@ -11,7 +11,7 @@ def test_reline_crlf_to_lf(application: Application):
         output = application.run(dir(), ['file.txt'])
         # then
         assert dir.open('file.txt') == "line\n"
-        assert output.text == "Updated: file.txt\n"
+        assert output.text == updated(['file.txt'])
 
 
 def test_reline_crlf_to_lf_multiline(application: Application):
@@ -32,9 +32,7 @@ def test_ignore_file_with_improper_encoding(application: Application):
         output = application.run(dir(), ['improper.txt'])
         # then
         assert dir.open_bytes('improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
-        assert output.text == """Failed:  improper.txt
-         ^ ! expected unicode encoding, malformed encoding found
-"""
+        assert output.text == malformed(['improper.txt'])
 
 
 def test_reline_crlf_to_lf_directory(application: Application):
@@ -45,7 +43,7 @@ def test_reline_crlf_to_lf_directory(application: Application):
         output = application.run(dir(), ['directory'])
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
-        assert output.text == "Updated: directory/file1.txt\n"
+        assert output.text == updated(['directory/file1.txt'])
 
 
 def test_reline_crlf_to_lf_directory_many(application: Application):
@@ -58,7 +56,7 @@ def test_reline_crlf_to_lf_directory_many(application: Application):
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
         assert dir.open('directory/file2.txt') == "line\nline"
-        assert output.text == "Updated: directory/file1.txt\nUpdated: directory/file2.txt\n"
+        assert output.text == updated(["directory/file1.txt", "directory/file2.txt"])
 
 
 def test_reline_crlf_to_lf_subdirectory(application: Application):
@@ -71,7 +69,7 @@ def test_reline_crlf_to_lf_subdirectory(application: Application):
         # then
         assert dir.open('one/two/file1.txt') == "line\nline"
         assert dir.open('one/two/file2.txt') == "line\nline"
-        assert output.text == "Updated: one/two/file1.txt\nUpdated: one/two/file2.txt\n"
+        assert output.text == updated(['one/two/file1.txt', 'one/two/file2.txt'])
 
 
 def test_ignore_directory_with_improper_encoding(application: Application):
@@ -82,9 +80,7 @@ def test_ignore_directory_with_improper_encoding(application: Application):
         output = application.run(dir(), ['directory'])
         # then
         assert dir.open_bytes('directory/improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
-        assert output.text == """Failed:  directory/improper.txt
-         ^ ! expected unicode encoding, malformed encoding found
-"""
+        assert output.text == malformed(['directory/improper.txt'])
 
 
 def test_not_reline_nested_directory(application: Application):
