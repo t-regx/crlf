@@ -3,10 +3,13 @@ from argparse import ArgumentParser
 from os.path import isfile, join, isdir, normpath, isabs
 from typing import Iterator
 
+from . import __version__
+
 
 def main(base: str, arguments: list[str]) -> None:
     parser = ArgumentParser('crlf', description='Tool to change line endings of text files')
     parser.add_argument('filename', help='file or directory')
+    parser.add_argument('--version', help='show version', action='version', version=__version__)
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
     args = parser.parse_args(arguments)
     if isabs(args.filename):
