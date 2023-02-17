@@ -40,7 +40,7 @@ def test_invoked_with_empty_filename(application: Application):
         # when
         output = application.run(dir(), [''])
     # then
-    assert output.error == """usage: crlf [-h] [--version] [-R] filename
+    assert output.error == """usage: crlf [-h] [-V] [-R] filename
 crlf: error: file does not exist ''
 """
 
@@ -51,7 +51,7 @@ def test_invoked_with_missing_file(application: Application):
         # when
         output = application.run(dir(), ['missing.txt'])
     # then
-    assert output.error == """usage: crlf [-h] [--version] [-R] filename
+    assert output.error == """usage: crlf [-h] [-V] [-R] filename
 crlf: error: file does not exist 'missing.txt'
 """
 
@@ -188,7 +188,7 @@ def test_fail_for_unrecognized_option(application: Application):
         # when
         output = application.run(dir(), ['--invalid', 'foo'])
     # then
-    assert output.error == """usage: crlf [-h] [--version] [-R] filename
+    assert output.error == """usage: crlf [-h] [-V] [-R] filename
 crlf: error: unrecognized arguments: --invalid
 """
 
@@ -199,6 +199,6 @@ def test_fail_for_unrecognized_switch(application: Application):
         # when
         output = application.run(dir(), ['-X', 'foo'])
     # then
-    assert output.error == """usage: crlf [-h] [--version] [-R] filename
+    assert output.error == """usage: crlf [-h] [-V] [-R] filename
 crlf: error: unrecognized arguments: -X
 """

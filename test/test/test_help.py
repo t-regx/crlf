@@ -10,7 +10,7 @@ def test_invoked_without_arguments(application: Application):
         # when
         output = application.run(dir(), [])
     # then
-    assert output.error == """usage: crlf [-h] [--version] [-R] filename
+    assert output.error == """usage: crlf [-h] [-V] [-R] filename
 crlf: error: the following arguments are required: filename
 """
 
@@ -22,17 +22,17 @@ def test_help(application: Application, argument: str):
         # when
         output = application.run(dir(), [argument])
     # then
-    assert output.text == """usage: crlf [-h] [--version] [-R] filename
+    assert output.text == """usage: crlf [-h] [-V] [-R] filename
 
 Tool to change line endings of text files
 
 positional arguments:
-  filename    file or directory
+  filename       file or directory
 
 options:
-  -h, --help  show this help message
-  --version   show version
-  -R          recurse into nested directories
+  -h, --help     show this help message
+  -V, --version  show version
+  -R             recurse into nested directories
 """
 
 

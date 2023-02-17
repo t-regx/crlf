@@ -14,7 +14,7 @@ def main(base: str, arguments: list[str]) -> None:
         allow_abbrev=False)
     parser.add_argument('filename', help='file or directory')
     parser.add_argument('-h', '--help', help='show this help message', action='help')
-    parser.add_argument('--version', help='show version', action='version', version=__version__)
+    parser.add_argument('-V', '--version', help='show version', action='version', version=__version__)
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
     args = parser.parse_args(arguments)
     if isabs(args.filename):
