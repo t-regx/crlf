@@ -13,7 +13,7 @@ def test_crlf_backslash(application: Application):
         # when
         output = application.run(dir(), ['one/file.txt'])
     # then
-    assert output.output == r"Corrected file one\file.txt" + "\n"
+    assert output.output == r"Updated: one\file.txt" + "\n"
 
 
 def test_crlf_log_output_system_separator(application: Application, separator: PathSeparator):
@@ -24,9 +24,9 @@ def test_crlf_log_output_system_separator(application: Application, separator: P
         output = application.run(dir(), ['one/file.txt'])
     # then
     if separator.forward:
-        assert output.output == "Corrected file one/file.txt\n"
+        assert output.output == "Updated: one/file.txt\n"
     else:
-        assert output.output == "Corrected file one\\file.txt\n"
+        assert output.output == "Updated: one\\file.txt\n"
 
 
 def test_ignore_log_output_system_separator(application: Application, separator: PathSeparator):
@@ -37,6 +37,10 @@ def test_ignore_log_output_system_separator(application: Application, separator:
         output = application.run(dir(), ['one/file.txt'])
     # then
     if separator.forward:
-        assert output.output == "Ignoring file one/file.txt" + "\n"
+        assert output.output == """Failed:  one/file.txt
+         ^ ! expected unicode encoding, malformed encoding found
+"""
     else:
-        assert output.output == r"Ignoring file one\file.txt" + "\n"
+        assert output.output == r"""Failed:  one\file.txt
+         ^ ! expected unicode encoding, malformed encoding found
+"""

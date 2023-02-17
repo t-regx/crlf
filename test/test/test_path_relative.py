@@ -18,4 +18,4 @@ def test_reline_relative_path(application: Application, path: str):
         output = application.run(dir(), [path])
         # then
         assert dir.open('one/file.txt') == "line\n"
-        assert output.text == "Corrected file one/file.txt\n"
+        assert output.text == "Updated: one/file.txt\n"

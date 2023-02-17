@@ -10,7 +10,7 @@ def test_crlf_absolute_path(application: Application):
         output = application.run(dir(), [dir('file.txt')])
         # then
         assert dir.open('file.txt') == "line\n"
-        assert output.text == f"Corrected file {dir('file.txt')}\n"
+        assert output.text == f"Updated: {dir('file.txt')}\n"
 
 
 def test_crlf_absolute_path_directory(application: Application):
@@ -21,7 +21,7 @@ def test_crlf_absolute_path_directory(application: Application):
         output = application.run(dir(), [dir('one')])
         # then
         assert dir.open('one/file.txt') == "line\n"
-        assert output.text == f"Corrected file {dir('one/file.txt')}\n"
+        assert output.text == f"Updated: {dir('one/file.txt')}\n"
 
 
 def test_crlf_absolute_path_directory_recurse(application: Application):
@@ -32,4 +32,4 @@ def test_crlf_absolute_path_directory_recurse(application: Application):
         output = application.run(dir(), ['-R', dir('one')])
         # then
         assert dir.open('one/two/file.txt') == "line\n"
-        assert output.text == f"Corrected file {dir('one/two/file.txt')}\n"
+        assert output.text == f"Updated: {dir('one/two/file.txt')}\n"

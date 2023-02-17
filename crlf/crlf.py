@@ -66,9 +66,10 @@ def unjoin(base: str, absolute_path: str) -> str:
 def reline_unicode_file(base: str, path: str) -> None:
     try:
         correct_file(join(base, path))
-        print(f'Corrected file {normpath(path)}')
+        print('Updated: ' + normpath(path))
     except UnicodeDecodeError:
-        print(f'Ignoring file {normpath(path)}')
+        print('Failed:  ' + normpath(path))
+        print('         ^ ! expected unicode encoding, malformed encoding found')
 
 
 def correct_file(filename: str) -> None:

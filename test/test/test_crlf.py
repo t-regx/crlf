@@ -31,7 +31,7 @@ def test_reline_crlf_to_lf_log_output(application: Application):
         # when
         output = application.run(dir(), ['file.txt'])
     # then
-    assert output.text == "Corrected file file.txt\n"
+    assert output.text == "Updated: file.txt\n"
 
 
 @memoryonly
@@ -70,7 +70,9 @@ def test_ignore_file_with_improper_encoding_log_output(application: Application)
         # when
         output = application.run(dir(), ['improper.txt'])
     # then
-    assert output.text == "Ignoring file improper.txt\n"
+    assert output.text == """Failed:  improper.txt
+         ^ ! expected unicode encoding, malformed encoding found
+"""
 
 
 def test_reline_crlf_to_lf_directory(application: Application):
@@ -90,7 +92,7 @@ def test_reline_crlf_to_lf_directory_log_output(application: Application):
         # when
         output = application.run(dir(), ['directory'])
     # then
-    assert output.text == "Corrected file directory/file1.txt\n"
+    assert output.text == "Updated: directory/file1.txt\n"
 
 
 def test_reline_crlf_to_lf_directory_many(application: Application):
@@ -113,7 +115,7 @@ def test_reline_crlf_to_lf_directory_many_log_output(application: Application):
         # when
         output = application.run(dir(), ['directory'])
     # then
-    assert output.text == "Corrected file directory/file1.txt\nCorrected file directory/file2.txt\n"
+    assert output.text == "Updated: directory/file1.txt\nUpdated: directory/file2.txt\n"
 
 
 def test_reline_crlf_to_lf_subdirectory(application: Application):
@@ -136,7 +138,7 @@ def test_reline_crlf_to_lf_subdirectory_log_output(application: Application):
         # when
         output = application.run(dir(), ['one/two'])
     # then
-    assert output.text == "Corrected file one/two/file1.txt\nCorrected file one/two/file2.txt\n"
+    assert output.text == "Updated: one/two/file1.txt\nUpdated: one/two/file2.txt\n"
 
 
 def test_ignore_directory_with_improper_encoding(application: Application):
@@ -156,7 +158,9 @@ def test_ignore_directory_with_improper_encoding_log_output(application: Applica
         # when
         output = application.run(dir(), ['directory'])
     # then
-    assert output.text == "Ignoring file directory/improper.txt\n"
+    assert output.text == """Failed:  directory/improper.txt
+         ^ ! expected unicode encoding, malformed encoding found
+"""
 
 
 def test_not_reline_nested_directory(application: Application):
