@@ -33,6 +33,9 @@ class Handle:
         else:
             self.__store_bytes(filename, content)
 
+    def create(self, directory_name: str) -> None:
+        os.mkdir(os.path.join(self.test_dir, directory_name))
+
     def __store_bytes(self, filename: str, bytes_: bytes):
         folder, _ = os.path.split(self.join(filename))
         if not os.path.exists(folder):

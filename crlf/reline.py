@@ -18,12 +18,12 @@ def reline(base: str, path: str, recurse: bool):
     if isdir(absolute_path):
         reline_directory(base, path, recurse)
     elif isfile(absolute_path):
-        reline_unicode_file(base, path)
+        reline_file(base, path)
 
 
 def reline_directory(base: str, path: str, recurse: bool) -> None:
     for filepath in directory_files(base, path, recurse):
-        reline_unicode_file(base, filepath)
+        reline_file(base, filepath)
 
 
 def directory_files(base: str, path: str, recurse: bool) -> Iterator[str]:
@@ -45,21 +45,23 @@ def unjoin(base: str, absolute_path: str) -> str:
     return absolute_path[len(base) + 1:]
 
 
-def reline_unicode_file(base: str, path: str) -> None:
-    try:
-        correct_file(join(base, path))
-        notify_updated(path)
-    except UnicodeDecodeError:
-        notify_malformed_encoding(path)
-
-
-def correct_file(filename: str) -> None:
+def reline_file(base: str, path: str) -> None:
+    filename = join(base, path)
     with open(filename, 'rb+') as file:
         lines = file.read()
         file.seek(0)
-        replace = str(lines, 'utf-8').replace("\r", "")
-        file.write(bytes(replace, 'utf-8'))
-        file.truncate()
+        try:
+            content = str(lines, 'utf-8')
+        except UnicodeDecodeError:
+            notify_malformed_encoding(path)
+            return
+        replace = content.replace("\r", "")
+        if replace == content:
+            notify_already_relined(path)
+        else:
+            file.write(bytes(replace, 'utf-8'))
+            file.truncate()
+            notify_updated(path)
 
 
 def notify_updated(path: str) -> None:
@@ -69,3 +71,8 @@ def notify_updated(path: str) -> None:
 def notify_malformed_encoding(path: str) -> None:
     print('Failed:  ' + normpath(path))
     print('         ^ ! expected unicode encoding, malformed encoding found')
+
+
+def notify_already_relined(path: str) -> None:
+    print('Ignored: ' + normpath(path))
+    print('         ^ file already has LF line endings')
