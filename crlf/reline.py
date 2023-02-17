@@ -1,42 +1,24 @@
 import os
-from argparse import ArgumentParser
 from os.path import isfile, join, isdir, normpath, isabs
 from typing import Iterator
 
-from crlf import __version__
+from crlf.arguments import parsed_arguments
 
 
 def main(base: str, arguments: list[str]) -> None:
-    parser = ArgumentParser(
-        prog='crlf',
-        description='Tool to change line endings of text files',
-        add_help=False,
-        allow_abbrev=False)
-    parser.add_argument('filename', help='file or directory')
-    parser.add_argument('-h', '--help', help='show this help message', action='help')
-    parser.add_argument('-V', '--version', help='show version', action='version', version=__version__)
-    parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
-    args = parser.parse_args(arguments)
-    if isabs(args.filename):
-        reline(parser, '', args.filename, args.recurse)
+    filename, recurse = parsed_arguments(base, arguments)
+    if isabs(filename):
+        reline('', filename, recurse)
     else:
-        reline(parser, base, args.filename, args.recurse)
+        reline(base, filename, recurse)
 
 
-def reline(parser, base: str, path: str, recurse: bool):
-    if path == '':
-        parser.error(f"file does not exist '{path}'")
-    reline_file_or_directory(parser, base, path, recurse)
-
-
-def reline_file_or_directory(parser, base: str, path: str, recurse: bool) -> None:
+def reline(base: str, path: str, recurse: bool):
     absolute_path = join(base, path)
     if isdir(absolute_path):
         reline_directory(base, path, recurse)
     elif isfile(absolute_path):
         reline_unicode_file(base, path)
-    else:
-        parser.error(f"file does not exist '{normpath(path)}'")
 
 
 def reline_directory(base: str, path: str, recurse: bool) -> None:
