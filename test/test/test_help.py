@@ -30,7 +30,7 @@ positional arguments:
   filename    file or directory
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help  show this help message
   --version   show version
   -R          recurse into nested directories
 """
