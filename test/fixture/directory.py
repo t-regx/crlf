@@ -46,4 +46,4 @@ class Handle:
         return self.join(*args)
 
     def join(self, *filenames: str) -> str:
-        return os.path.join(self.test_dir, *filenames)
+        return os.path.join(self.test_dir, *filenames).replace('\\', '/')
