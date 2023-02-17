@@ -44,3 +44,19 @@ def test_ignore_output_system_separator(application: Application, separator: Pat
         assert output.output == r"""Failed:  one\file.txt
          ^ ! expected unicode encoding, malformed encoding found
 """
+
+
+def test_crlf_output_system_separator_missing(application: Application, separator: PathSeparator):
+    # given
+    with directory() as dir:
+        # when
+        output = application.run(dir(), ['one/missing.txt'])
+    # then
+    if separator.forward:
+        assert output.error == """usage: crlf [-h] [-V] [-R] filename
+crlf: error: file does not exist 'one/missing.txt'
+"""
+    else:
+        assert output.error == r"""usage: crlf [-h] [-V] [-R] filename
+crlf: error: file does not exist 'one\missing.txt'
+"""
