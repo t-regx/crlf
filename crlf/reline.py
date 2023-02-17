@@ -3,27 +3,29 @@ from os.path import isfile, join, isdir, normpath, isabs
 from typing import Iterator
 
 from crlf.arguments import parsed_arguments
+from crlf.info import Info, PrintInfo, QuietInfo
 
 
 def main(base: str, arguments: list[str]) -> None:
-    filename, recurse = parsed_arguments(base, arguments)
+    filename, recurse, quiet = parsed_arguments(base, arguments)
+    info = QuietInfo() if quiet else PrintInfo()
     if isabs(filename):
-        reline('', filename, recurse)
+        reline('', filename, recurse, info)
     else:
-        reline(base, filename, recurse)
+        reline(base, filename, recurse, info)
 
 
-def reline(base: str, path: str, recurse: bool):
+def reline(base: str, path: str, recurse: bool, info: Info):
     absolute_path = join(base, path)
     if isdir(absolute_path):
-        reline_directory(base, path, recurse)
+        reline_directory(base, path, recurse, info)
     elif isfile(absolute_path):
-        reline_file(base, path)
+        reline_file(base, path, info)
 
 
-def reline_directory(base: str, path: str, recurse: bool) -> None:
+def reline_directory(base: str, path: str, recurse: bool, info: Info) -> None:
     for filepath in directory_files(base, path, recurse):
-        reline_file(base, filepath)
+        reline_file(base, filepath, info)
 
 
 def directory_files(base: str, path: str, recurse: bool) -> Iterator[str]:
@@ -45,7 +47,7 @@ def unjoin(base: str, absolute_path: str) -> str:
     return absolute_path[len(base) + 1:]
 
 
-def reline_file(base: str, path: str) -> None:
+def reline_file(base: str, path: str, info: Info) -> None:
     filename = join(base, path)
     with open(filename, 'rb+') as file:
         lines = file.read()
@@ -53,26 +55,12 @@ def reline_file(base: str, path: str) -> None:
         try:
             content = str(lines, 'utf-8')
         except UnicodeDecodeError:
-            notify_malformed_encoding(path)
+            info.malformed_encoding(normpath(path))
             return
         replace = content.replace("\r", "")
         if replace == content:
-            notify_already_relined(path)
+            info.already_relined(normpath(path))
         else:
             file.write(bytes(replace, 'utf-8'))
             file.truncate()
-            notify_updated(path)
-
-
-def notify_updated(path: str) -> None:
-    print('Updated: ' + normpath(path))
-
-
-def notify_malformed_encoding(path: str) -> None:
-    print('Failed:  ' + normpath(path))
-    print('         ^ ! expected unicode encoding, malformed encoding found')
-
-
-def notify_already_relined(path: str) -> None:
-    print('Ignored: ' + normpath(path))
-    print('         ^ file already has LF line endings')
+            info.updated(normpath(path))

@@ -21,17 +21,18 @@ def test_help(application: Application, argument: str):
         # when
         output = application.run(dir(), [argument])
     # then
-    assert output.text == """usage: crlf [-h] [-V] [-R] filename
+    assert output.text == """usage: crlf [-h] [-V] [-q] [-R] filename
 
 Tool to change line endings of text files
 
 positional arguments:
-  filename       path to a file or directory
+  filename               path to a file or directory
 
 options:
-  -h, --help     show this help message
-  -V, --version  show version
-  -R             recurse into nested directories
+  -h, --help             show this help message
+  -V, --version          show version
+  -q, --quiet, --silent  change line endings without any output
+  -R                     recurse into nested directories
 """
 
 

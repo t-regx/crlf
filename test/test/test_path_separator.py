@@ -53,10 +53,10 @@ def test_crlf_output_system_separator_missing(application: Application, separato
         output = application.run(dir(), ['directory/missing.txt'])
     # then
     if separator.forward:
-        assert output.output_error == """usage: crlf [-h] [-V] [-R] filename
+        assert output.output_error == """usage: crlf [-h] [-V] [-q] [-R] filename
 crlf: error: file does not exist 'directory/missing.txt'
 """
     else:
-        assert output.output_error == r"""usage: crlf [-h] [-V] [-R] filename
+        assert output.output_error == r"""usage: crlf [-h] [-V] [-q] [-R] filename
 crlf: error: file does not exist 'directory\missing.txt'
 """
