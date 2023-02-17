@@ -1,3 +1,5 @@
+from pytest import mark
+
 from test.conftest import Application
 from test.fixture.directory import directory
 from test.fixture.usage import malformed
@@ -21,7 +23,11 @@ Done. Updated: 1 files, ignored: 1 files, and encountered malformed: 1 files.
 """
 
 
-def test_summary_many(application: Application):
+@mark.parametrize('options', [
+    ['--quiet'],
+    []
+])
+def test_summary_many(application: Application, options: list[str]):
     # given
     with directory() as dir:
         dir.store('directory/first/malformed.txt', b'\x1f\x7f\xee \x0d\x0a')
@@ -30,7 +36,7 @@ def test_summary_many(application: Application):
         dir.store('directory/second/ignored.txt', "line\n")
         dir.store('directory/regular.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['-R', 'directory'])
+        output = application.run(dir(), ['-R', 'directory', *options])
         # then
         assert output.text.endswith("Done. Updated: 2 files, ignored: 2 files, and encountered malformed: 1 files.\n")
 

@@ -3,12 +3,11 @@ from os.path import isfile, join, isdir, normpath, isabs
 from typing import Iterator
 
 from crlf.arguments import parsed_arguments
-from crlf.summary import Info, PrintInfo, QuietInfo
+from crlf.summary import Info
 
 
 def main(base: str, arguments: list[str]) -> None:
-    filename, recurse, quiet = parsed_arguments(base, arguments)
-    info = QuietInfo() if quiet else PrintInfo()
+    filename, recurse, info = parsed_arguments(base, arguments)
     if isabs(filename):
         reline('', filename, recurse, info)
     else:

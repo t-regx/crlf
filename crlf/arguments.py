@@ -1,28 +1,35 @@
-from argparse import ArgumentParser, HelpFormatter
+from argparse import ArgumentParser
 from os.path import exists, join, normpath
 
-from crlf import __version__
+from crlf import __version__, __name__
+from crlf.summary import Info, StandardInfo, QuietInfo, SilentInfo
 
 
-def parsed_arguments(base: str, arguments: list[str]) -> tuple[str, bool, bool]:
+def parsed_arguments(base: str, arguments: list[str]) -> tuple[str, bool, Info]:
     parser = ArgumentParser(
-        prog='crlf',
+        prog=__name__,
         description='Tool to change line endings of text files',
-        formatter_class=formatter,
         add_help=False,
         allow_abbrev=False)
     parser.add_argument('filename', help='path to a file or directory')
     parser.add_argument('-h', '--help', help='show this help message', action='help')
     parser.add_argument('-V', '--version', help='show version', action='version', version=__version__)
-    parser.add_argument('-q', '--quiet', '--silent', help='change line endings without any output', action='store_true')
+    quiet = parser.add_mutually_exclusive_group()
+    quiet.add_argument('-q', '--quiet',
+                       help='change line endings without batch output, only summary', action='store_true')
+    quiet.add_argument('-s', '--silent', help='change line endings without any output', action='store_true')
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
     args = parser.parse_args(arguments)
     if args.filename == '':
         parser.error(f"file does not exist '{args.filename}'")
     if not exists(join(base, args.filename)):
         parser.error(f"file does not exist '{normpath(args.filename)}'")
-    return args.filename, args.recurse, args.quiet
+    return args.filename, args.recurse, info(args.quiet, args.silent)
 
 
-def formatter(prog: str) -> HelpFormatter:
-    return HelpFormatter(prog, max_help_position=52)
+def info(quiet: bool, silent: bool) -> Info:
+    if quiet:
+        return QuietInfo()
+    if silent:
+        return SilentInfo()
+    return StandardInfo()
