@@ -48,10 +48,9 @@ def unjoin(base: str, absolute_path: str) -> str:
 def reline_unicode_file(base: str, path: str) -> None:
     try:
         correct_file(join(base, path))
-        print('Updated: ' + normpath(path))
+        notify_updated(path)
     except UnicodeDecodeError:
-        print('Failed:  ' + normpath(path))
-        print('         ^ ! expected unicode encoding, malformed encoding found')
+        notify_malformed_encoding(path)
 
 
 def correct_file(filename: str) -> None:
@@ -61,3 +60,12 @@ def correct_file(filename: str) -> None:
         replace = str(lines, 'utf-8').replace("\r", "")
         file.write(bytes(replace, 'utf-8'))
         file.truncate()
+
+
+def notify_updated(path: str) -> None:
+    print('Updated: ' + normpath(path))
+
+
+def notify_malformed_encoding(path: str) -> None:
+    print('Failed:  ' + normpath(path))
+    print('         ^ ! expected unicode encoding, malformed encoding found')
