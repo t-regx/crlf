@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from os import walk
 from os.path import isfile, join, isdir, normpath
+from typing import Iterator
 
 
 def main(base: str, arguments: list[str]) -> None:
@@ -28,12 +29,13 @@ def convert_file_or_directory(parser, base: str, path: str) -> None:
 
 def convert_directory(base: str, path: str) -> None:
     for filename in directory_files(base, path):
-        convert_unicode_file(base, join(path, filename))
+        convert_unicode_file(base, filename)
 
 
-def directory_files(base: str, path: str) -> list[str]:
+def directory_files(base: str, path: str) -> Iterator[str]:
     _, _, filenames = next(walk(join(base, path)))
-    return filenames
+    for filename in filenames:
+        yield join(path, filename)
 
 
 def convert_unicode_file(base: str, path: str) -> None:
