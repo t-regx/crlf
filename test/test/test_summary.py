@@ -12,7 +12,7 @@ def test_summary(application: Application):
         dir.store('directory/ignored.txt', "line\n")
         dir.store('directory/regular.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['directory'])
+        output = application.run(dir(), ['--to', 'lf', 'directory'])
         # then
         assert output.text == """Ignored: directory/ignored.txt
          ^ file already has LF line endings
@@ -36,7 +36,7 @@ def test_summary_many(application: Application, options: list[str]):
         dir.store('directory/second/ignored.txt', "line\n")
         dir.store('directory/regular.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['-R', 'directory', *options])
+        output = application.run(dir(), ['--to', 'crlf', '-R', 'directory', *options])
         # then
         assert output.text.endswith("Done. Updated: 2 files, ignored: 2 files, and encountered malformed: 1 files.\n")
 
@@ -47,7 +47,7 @@ def test_stat_improper_encoding(application: Application):
         dir.store('directory/first.txt', b'\x1f\x7f\xee \x0d\x0a')
         dir.store('directory/second.txt', b'\x1f\x7f\xee \x0d\x0a')
         # when
-        output = application.run(dir(), ['directory'])
+        output = application.run(dir(), ['--to', 'crlf', 'directory'])
         # then
         assert output.text == malformed([
             'directory/first.txt',

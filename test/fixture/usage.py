@@ -1,5 +1,5 @@
 def error(message: str) -> str:
-    return "usage: crlf [-h] [-V] [-q | -s] [-R] [--to {crlf}] filename" + f"""
+    return "usage: crlf [-h] [-V] [-q | -s] [-R] --to {crlf,lf} filename" + f"""
 crlf: error: {message}
 """
 

@@ -16,7 +16,7 @@ def test_reline_relative_path(application: Application, path: str):
     with directory() as dir:
         dir.store('directory/file.txt', "line\r\n")
         # when
-        output = application.run(dir(), [path])
+        output = application.run(dir(), ['--to', 'lf', path])
         # then
         assert dir.open('directory/file.txt') == "line\n"
         assert output.text == updated(['directory/file.txt'])

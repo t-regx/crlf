@@ -12,7 +12,7 @@ def test_crlf_backslash(application: Application):
     with directory() as dir:
         dir.store('directory/file.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['directory/file.txt'])
+        output = application.run(dir(), ['--to', 'lf', 'directory/file.txt'])
     # then
     assert output.output_text == updated([r"directory\file.txt"])
 
@@ -22,7 +22,7 @@ def test_crlf_output_system_separator(application: Application, separator: PathS
     with directory() as dir:
         dir.store('directory/file.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['directory/file.txt'])
+        output = application.run(dir(), ['--to', 'lf', 'directory/file.txt'])
     # then
     if separator.forward:
         assert output.output_text == updated(['directory/file.txt'])
@@ -35,7 +35,7 @@ def test_ignore_output_system_separator(application: Application, separator: Pat
     with directory() as dir:
         dir.store('directory/file.txt', b'\x1f\x7f\xee')
         # when
-        output = application.run(dir(), ['directory/file.txt'])
+        output = application.run(dir(), ['--to', 'lf', 'directory/file.txt'])
     # then
     if separator.forward:
         assert output.output_text == malformed(['directory/file.txt'])
@@ -47,7 +47,7 @@ def test_crlf_output_system_separator_missing(application: Application, separato
     # given
     with directory() as dir:
         # when
-        output = application.run(dir(), ['directory/missing.txt'])
+        output = application.run(dir(), ['--to', 'lf', 'directory/missing.txt'])
     # then
     if separator.forward:
         assert output.output_error == error("file does not exist 'directory/missing.txt'")

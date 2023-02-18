@@ -27,4 +27,4 @@ def test_disallow_abbreviation(application: Application):
         # when
         output = application.run(dir(), ['--ver'])
     # then
-    assert output.error == error("the following arguments are required: filename")
+    assert output.error == error("the following arguments are required: filename, --to")

@@ -19,13 +19,14 @@ def parsed_arguments(base: str, arguments: list[str]) -> tuple[str, bool, Info, 
                        help='change line endings without batch output, only summary', action='store_true')
     quiet.add_argument('-s', '--silent', help='change line endings without any output', action='store_true')
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
-    parser.add_argument('--to', choices=['crlf'], help='change line endings to CRLF', dest='destination', default='lf')
+    parser.add_argument('--to', choices=['crlf', 'lf'], required=True,
+                        help='change line endings to CRLF or LF', dest='destination')
     args = parser.parse_args(arguments)
     if args.filename == '':
         parser.error(f"file does not exist '{args.filename}'")
     if not exists(join(base, args.filename)):
         parser.error(f"file does not exist '{normpath(args.filename)}'")
-    return args.filename, args.recurse, info(args.quiet, args.silent),  args.destination
+    return args.filename, args.recurse, info(args.quiet, args.silent), args.destination
 
 
 def info(quiet: bool, silent: bool) -> Info:

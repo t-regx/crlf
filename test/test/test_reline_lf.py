@@ -8,7 +8,7 @@ def test_reline_to_lf(application: Application):
     with directory() as dir:
         dir.store('file.txt', "line\r\n")
         # when
-        output = application.run(dir(), ['file.txt'])
+        output = application.run(dir(), ['--to', 'lf', 'file.txt'])
         # then
         assert dir.open('file.txt') == "line\n"
         assert output.text == updated(['file.txt'])
@@ -19,7 +19,7 @@ def test_reline_to_lf_multiline(application: Application):
     with directory() as dir:
         dir.store('file.txt', "first\r\nsecond\r\n")
         # when
-        application.run(dir(), ['file.txt'])
+        application.run(dir(), ['--to', 'lf', 'file.txt'])
         # then
         assert dir.open('file.txt') == "first\nsecond\n"
 
@@ -29,7 +29,7 @@ def test_reline_to_lf_directory(application: Application):
     with directory() as dir:
         dir.store('directory/file1.txt', "line\r\nline")
         # when
-        output = application.run(dir(), ['directory'])
+        output = application.run(dir(), ['--to', 'lf', 'directory'])
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
         assert output.text == updated(['directory/file1.txt'])
@@ -41,7 +41,7 @@ def test_reline_to_lf_directory_many(application: Application):
         dir.store('directory/file1.txt', "line\r\nline")
         dir.store('directory/file2.txt', "line\r\nline")
         # when
-        output = application.run(dir(), ['directory'])
+        output = application.run(dir(), ['--to', 'lf', 'directory'])
         # then
         assert dir.open('directory/file1.txt') == "line\nline"
         assert dir.open('directory/file2.txt') == "line\nline"
@@ -54,7 +54,7 @@ def test_reline_to_lf_subdirectory(application: Application):
         dir.store('one/two/file1.txt', "line\r\nline")
         dir.store('one/two/file2.txt', "line\r\nline")
         # when
-        output = application.run(dir(), ['one/two'])
+        output = application.run(dir(), ['--to', 'lf', 'one/two'])
         # then
         assert dir.open('one/two/file1.txt') == "line\nline"
         assert dir.open('one/two/file2.txt') == "line\nline"
@@ -66,7 +66,7 @@ def test_reline_mixed_endings(application: Application):
     with directory() as dir:
         dir.store('file.txt', "first\r\nsecond\n")
         # when
-        output = application.run(dir(), ['file.txt'])
+        output = application.run(dir(), ['--to', 'lf', 'file.txt'])
         # then
         assert dir.open('file.txt') == "first\nsecond\n"
         assert output.text == updated(['file.txt'])
