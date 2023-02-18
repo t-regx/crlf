@@ -7,8 +7,8 @@ from crlf.arguments import parsed_arguments
 from crlf.summary import Info
 
 
-def main(base: str, arguments: list[str]) -> None:
-    filename, recurse, info, destination = parsed_arguments(base, arguments)
+def main(base: str, arguments: list[str], width: int) -> None:
+    filename, recurse, info, destination = parsed_arguments(base, arguments, width)
     if isabs(filename):
         reline('', filename, recurse, info, destination)
     else:

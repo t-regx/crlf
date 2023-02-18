@@ -1,15 +1,16 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, HelpFormatter
 from os.path import exists, join, normpath
 
 from crlf import __version__, __name__
 from crlf.summary import Info, StandardInfo, QuietInfo, SilentInfo
 
 
-def parsed_arguments(base: str, arguments: list[str]) -> tuple[str, bool, Info, str]:
+def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[str, bool, Info, str]:
     parser = ArgumentParser(
         prog=__name__,
         description='Tool to change line endings of text files',
         add_help=False,
+        formatter_class=lambda prog: HelpFormatter(prog, width=width-2),
         allow_abbrev=False)
     parser.add_argument('filename', help='path to a file or directory')
     parser.add_argument('-h', '--help', help='show this help message', action='help')
