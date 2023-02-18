@@ -1,5 +1,6 @@
 import os
 from os.path import isfile, join, isdir, normpath, isabs
+from re import sub
 from typing import Iterator
 
 from crlf.arguments import parsed_arguments
@@ -7,25 +8,25 @@ from crlf.summary import Info
 
 
 def main(base: str, arguments: list[str]) -> None:
-    filename, recurse, info = parsed_arguments(base, arguments)
+    filename, recurse, info, destination = parsed_arguments(base, arguments)
     if isabs(filename):
-        reline('', filename, recurse, info)
+        reline('', filename, recurse, info, destination)
     else:
-        reline(base, filename, recurse, info)
+        reline(base, filename, recurse, info, destination)
     info.summary()
 
 
-def reline(base: str, path: str, recurse: bool, info: Info):
+def reline(base: str, path: str, recurse: bool, info: Info, destination: str):
     absolute_path = join(base, path)
     if isdir(absolute_path):
-        reline_directory(base, path, recurse, info)
+        reline_directory(base, path, recurse, info, destination)
     elif isfile(absolute_path):
-        reline_file(base, path, info)
+        reline_file(base, path, info, destination)
 
 
-def reline_directory(base: str, path: str, recurse: bool, info: Info) -> None:
+def reline_directory(base: str, path: str, recurse: bool, info: Info, destination: str) -> None:
     for filepath in directory_files(base, path, recurse):
-        reline_file(base, filepath, info)
+        reline_file(base, filepath, info, destination)
 
 
 def directory_files(base: str, path: str, recurse: bool) -> Iterator[str]:
@@ -47,7 +48,7 @@ def unjoin(base: str, absolute_path: str) -> str:
     return absolute_path[len(base) + 1:]
 
 
-def reline_file(base: str, path: str, info: Info) -> None:
+def reline_file(base: str, path: str, info: Info, destination: str) -> None:
     filename = join(base, path)
     with open(filename, 'rb+') as file:
         lines = file.read()
@@ -57,10 +58,16 @@ def reline_file(base: str, path: str, info: Info) -> None:
         except UnicodeDecodeError:
             info.malformed_encoding(normpath(path))
             return
-        replace = content.replace("\r", "")
-        if replace == content:
-            info.already_relined(normpath(path), 'lf')
+        replaced = reline_string(destination, content)
+        if replaced == content:
+            info.already_relined(normpath(path), destination)
         else:
-            file.write(bytes(replace, 'utf-8'))
+            file.write(bytes(replaced, 'utf-8'))
             file.truncate()
             info.updated(normpath(path))
+
+
+def reline_string(direction: str, string: str) -> str:
+    if direction == 'crlf':
+        return sub(r'(?<!\r)\n', '\r\n', string)
+    return string.replace("\r\n", "\n")

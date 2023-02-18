@@ -21,7 +21,7 @@ def test_help(application: Application, argument: str):
         # when
         output = application.run(dir(), [argument])
     # then
-    assert output.text == """usage: crlf [-h] [-V] [-q | -s] [-R] filename
+    assert output.text == """usage: crlf [-h] [-V] [-q | -s] [-R] [--to {crlf}] filename
 
 Tool to change line endings of text files
 
@@ -34,6 +34,7 @@ options:
   -q, --quiet    change line endings without batch output, only summary
   -s, --silent   change line endings without any output
   -R             recurse into nested directories
+  --to {crlf}    change line endings to CRLF
 """
 
 
