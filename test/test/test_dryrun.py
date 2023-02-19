@@ -2,7 +2,7 @@ from pytest import mark
 
 from test.fixture.application import Application
 from test.fixture.directory import directory
-from test.fixture.usage import summary, updated, ignored, malformed
+from test.fixture.usage import summary, updated, ignored, failed
 
 
 @mark.parametrize("argument", ['-d', '--dry-run'])
@@ -28,7 +28,7 @@ def test_dryrun_ignored(application: Application):
         assert output.text == ignored(['file.txt'], 'lf', dryrun=True)
 
 
-def test_dryrun_malformed(application: Application):
+def test_dryrun_failed(application: Application):
     # given
     with directory() as dir:
         dir.store('file.txt', b'line\r\n \x1f\x7f\xee \x0d\x0a')
@@ -36,7 +36,7 @@ def test_dryrun_malformed(application: Application):
         output = application.run(dir(), ['--to', 'lf', '--dry-run', 'file.txt'])
         # then
         assert dir.open_bytes('file.txt') == b'line\r\n \x1f\x7f\xee \x0d\x0a'
-        assert output.text == malformed(['file.txt'], dryrun=True)
+        assert output.text == failed(['file.txt'], dryrun=True)
 
 
 @mark.parametrize("argument", ['-d', '--dry-run'])

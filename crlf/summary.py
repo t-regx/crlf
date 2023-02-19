@@ -4,14 +4,14 @@ from abc import ABC
 class Info(ABC):
     def __init__(self):
         self._updated = 0
-        self._malformed = 0
+        self._failed = 0
         self._ignored = 0
 
     def updated(self, path: str) -> None:
         self._updated += 1
 
-    def malformed_encoding(self, path: str) -> None:
-        self._malformed += 1
+    def non_unicode(self, path: str) -> None:
+        self._failed += 1
 
     def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1
@@ -20,7 +20,7 @@ class Info(ABC):
         print("Done. " +
               f"Updated: {self._updated} files, " +
               f"ignored: {self._ignored} files, " +
-              f"and encountered malformed: {self._malformed} files.")
+              f"failed to read: {self._failed} files.")
         if dryrun:
             print("Executed in dry mode, no files were actually modified.")
 
@@ -39,10 +39,10 @@ class StandardInfo(Info):
         self._updated += 1
         print('Updated: ' + path)
 
-    def malformed_encoding(self, path: str) -> None:
-        self._malformed += 1
+    def non_unicode(self, path: str) -> None:
+        self._failed += 1
         print('Failed:  ' + path)
-        print('         ^ ! expected unicode encoding, malformed encoding found')
+        print('         ^ ! expected text file in unicode encoding, failed to parse file')
 
     def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1

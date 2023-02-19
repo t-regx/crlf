@@ -1,6 +1,6 @@
 from test.conftest import Application
 from test.fixture.directory import directory
-from test.fixture.usage import malformed, summary
+from test.fixture.usage import failed, summary
 
 
 def test_not_reline_nested_directory(application: Application):
@@ -22,7 +22,7 @@ def test_ignore_file_with_improper_encoding(application: Application):
         output = application.run(dir(), ['--to', 'lf', 'improper.txt'])
         # then
         assert dir.open_bytes('improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
-        assert output.text == malformed(['improper.txt'])
+        assert output.text == failed(['improper.txt'])
 
 
 def test_ignore_directory_with_improper_encoding(application: Application):
@@ -33,4 +33,4 @@ def test_ignore_directory_with_improper_encoding(application: Application):
         output = application.run(dir(), ['--to', 'lf', 'directory'])
         # then
         assert dir.open_bytes('directory/improper.txt') == b'\x1f\x7f\xee \x0d\x0a'
-        assert output.text == malformed(['directory/improper.txt'])
+        assert output.text == failed(['directory/improper.txt'])

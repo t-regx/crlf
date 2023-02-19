@@ -2,7 +2,7 @@ from pytest import mark
 
 from test.conftest import Application
 from test.fixture.directory import directory
-from test.fixture.usage import malformed
+from test.fixture.usage import failed
 
 
 def test_summary(application: Application):
@@ -17,9 +17,9 @@ def test_summary(application: Application):
         assert output.text == """Ignored: directory/ignored.txt
          ^ file already has LF line endings
 Failed:  directory/malformed.txt
-         ^ ! expected unicode encoding, malformed encoding found
+         ^ ! expected text file in unicode encoding, failed to parse file
 Updated: directory/regular.txt
-Done. Updated: 1 files, ignored: 1 files, and encountered malformed: 1 files.
+Done. Updated: 1 files, ignored: 1 files, failed to read: 1 files.
 """
 
 
@@ -38,7 +38,7 @@ def test_summary_many(application: Application, options: list[str]):
         # when
         output = application.run(dir(), ['--to', 'crlf', '-R', 'directory', *options])
         # then
-        assert output.text.endswith("Done. Updated: 2 files, ignored: 2 files, and encountered malformed: 1 files.\n")
+        assert output.text.endswith("Done. Updated: 2 files, ignored: 2 files, failed to read: 1 files.\n")
 
 
 def test_stat_improper_encoding(application: Application):
@@ -49,7 +49,7 @@ def test_stat_improper_encoding(application: Application):
         # when
         output = application.run(dir(), ['--to', 'crlf', 'directory'])
         # then
-        assert output.text == malformed([
+        assert output.text == failed([
             'directory/first.txt',
             'directory/second.txt',
         ])

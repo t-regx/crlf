@@ -68,7 +68,7 @@ def test_silent_ignore_directory(application: Application):
     assert output.text == ""
 
 
-def test_silent_malformed(application: Application):
+def test_silent_failed(application: Application):
     # given
     with directory() as dir:
         dir.store('file.txt', b'\x1f\x7f\xee')

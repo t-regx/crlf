@@ -45,7 +45,7 @@ def reline_file(f: File, info: Info, destination: str, dryrun: bool) -> None:
         try:
             content = str(lines, 'utf-8')
         except UnicodeDecodeError:
-            info.malformed_encoding(f.relative)
+            info.non_unicode(f.relative)
             return
         replaced = reline_string(destination, content)
         if replaced == content:

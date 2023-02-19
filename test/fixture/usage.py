@@ -4,9 +4,9 @@ crlf: error: {message}
 """
 
 
-def summary(updated: int = 0, ignored: int = 0, malformed: int = 0, dryrun: bool = False) -> str:
+def summary(updated: int = 0, ignored: int = 0, failed: int = 0, dryrun: bool = False) -> str:
     return append_dryrun(
-        f'Done. Updated: {updated} files, ignored: {ignored} files, and encountered malformed: {malformed} files.\n',
+        f'Done. Updated: {updated} files, ignored: {ignored} files, failed to read: {failed} files.\n',
         dryrun)
 
 
@@ -22,9 +22,9 @@ def ignored(filenames: list[str], destination: str, dryrun: bool = False) -> str
         dryrun)
 
 
-def malformed(filenames: list[str], dryrun: bool = False) -> str:
+def failed(filenames: list[str], dryrun: bool = False) -> str:
     return append_dryrun(
-        ''.join([_malformed(filename) for filename in filenames]) + summary(malformed=len(filenames)),
+        ''.join([_failed(filename) for filename in filenames]) + summary(failed=len(filenames)),
         dryrun)
 
 
@@ -34,9 +34,9 @@ def _ignored(filename: str, destination: str) -> str:
 """
 
 
-def _malformed(filename: str) -> str:
+def _failed(filename: str) -> str:
     return f"""Failed:  {filename}
-         ^ ! expected unicode encoding, malformed encoding found
+         ^ ! expected text file in unicode encoding, failed to parse file
 """
 
 

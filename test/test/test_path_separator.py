@@ -3,7 +3,7 @@ from pytest import mark
 from test.conftest import Application
 from test.fixture.directory import directory
 from test.fixture.pathseparator import PathSeparator, unix
-from test.fixture.usage import malformed, error, updated
+from test.fixture.usage import failed, error, updated
 
 
 @mark.skipif(unix, reason='skipping backslash path test on unix')
@@ -38,9 +38,9 @@ def test_ignore_output_system_separator(application: Application, separator: Pat
         output = application.run(dir(), ['--to', 'lf', 'directory/file.txt'])
     # then
     if separator.forward:
-        assert output.output_text == malformed(['directory/file.txt'])
+        assert output.output_text == failed(['directory/file.txt'])
     else:
-        assert output.output_text == malformed([r'directory\file.txt'])
+        assert output.output_text == failed([r'directory\file.txt'])
 
 
 def test_crlf_output_system_separator_missing(application: Application, separator: PathSeparator):
