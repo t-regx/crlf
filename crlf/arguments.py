@@ -2,10 +2,11 @@ from argparse import ArgumentParser, HelpFormatter
 from os.path import exists, join, normpath
 
 from crlf import __version__, __name__
+from crlf.fs import RootPath
 from crlf.summary import Info, StandardInfo, QuietInfo, SilentInfo
 
 
-def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[str, bool, Info, str]:
+def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[RootPath, bool, Info, str, bool]:
     parser = ArgumentParser(
         prog=__name__,
         description='Tool to change line endings of text files',
@@ -19,6 +20,7 @@ def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[str, 
     quiet.add_argument('-q', '--quiet',
                        help='change line endings without batch output, only summary', action='store_true')
     quiet.add_argument('-s', '--silent', help='change line endings without any output', action='store_true')
+    parser.add_argument('-d', '--dry-run', help='do not actually modify files', action='store_true')
     parser.add_argument('-R', help='recurse into nested directories', dest='recurse', action='store_true')
     parser.add_argument('--to', choices=['crlf', 'lf'], required=True,
                         help='change line endings to CRLF or LF', dest='destination')
@@ -27,7 +29,7 @@ def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[str, 
         parser.error(f"file does not exist '{args.filename}'")
     if not exists(join(base, args.filename)):
         parser.error(f"file does not exist '{normpath(args.filename)}'")
-    return args.filename, args.recurse, info(args.quiet, args.silent), args.destination
+    return RootPath(base, args.filename), args.recurse, info(args.quiet, args.silent), args.destination, args.dry_run
 
 
 def info(quiet: bool, silent: bool) -> Info:

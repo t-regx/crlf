@@ -16,15 +16,17 @@ class Info(ABC):
     def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1
 
-    def summary(self) -> None:
+    def summary(self, dryrun: bool) -> None:
         print("Done. " +
               f"Updated: {self._updated} files, " +
               f"ignored: {self._ignored} files, " +
               f"and encountered malformed: {self._malformed} files.")
+        if dryrun:
+            print("Executed in dry mode, no files were actually modified.")
 
 
 class SilentInfo(Info):
-    def summary(self) -> None:
+    def summary(self, dryrun: bool) -> None:
         pass
 
 

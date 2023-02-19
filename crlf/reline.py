@@ -1,70 +1,60 @@
 import os
-from os.path import isfile, join, isdir, normpath, isabs
+from os.path import join
 from re import sub
 from typing import Iterator
 
 from crlf.arguments import parsed_arguments
+from crlf.fs import Directory, File, RootPath
 from crlf.summary import Info
 
 
 def main(base: str, arguments: list[str], width: int) -> None:
-    filename, recurse, info, destination = parsed_arguments(base, arguments, width)
-    if isabs(filename):
-        reline('', filename, recurse, info, destination)
-    else:
-        reline(base, filename, recurse, info, destination)
-    info.summary()
+    root, recurse, info, destination, dryrun = parsed_arguments(base, arguments, width)
+    reline(root, recurse, info, destination, dryrun)
+    info.summary(dryrun)
 
 
-def reline(base: str, path: str, recurse: bool, info: Info, destination: str):
-    absolute_path = join(base, path)
-    if isdir(absolute_path):
-        reline_directory(base, path, recurse, info, destination)
-    elif isfile(absolute_path):
-        reline_file(base, path, info, destination)
+def reline(root: RootPath, recurse: bool, info: Info, destination: str, dryrun: bool):
+    if root.isdir():
+        reline_directory(root.dir(), recurse, info, destination, dryrun)
+    elif root.isfile():
+        reline_file(root.file(), info, destination, dryrun)
 
 
-def reline_directory(base: str, path: str, recurse: bool, info: Info, destination: str) -> None:
-    for filepath in directory_files(base, path, recurse):
-        reline_file(base, filepath, info, destination)
+def reline_directory(dir: Directory, recurse: bool, info: Info, destination: str, dryrun: bool) -> None:
+    for file in directory_files(dir, recurse):
+        reline_file(file, info, destination, dryrun)
 
 
-def directory_files(base: str, path: str, recurse: bool) -> Iterator[str]:
-    for directory, _, filenames in walk(join(base, path), recurse):
-        short_path = unjoin(base, directory)
+def directory_files(dir: Directory, recurse: bool) -> Iterator[File]:
+    for nested_directory, _, filenames in walk(dir, recurse):
         for filename in filenames:
-            yield join(short_path, filename)
+            yield dir.child(join(nested_directory, filename))
 
 
-def walk(absolute_path: str, recurse: bool) -> Iterator:
+def walk(directory: Directory, recurse: bool) -> Iterator:
     if recurse:
-        return os.walk(absolute_path)
-    return [next(os.walk(absolute_path))]
+        return os.walk(directory.abs)
+    return [next(os.walk(directory.abs))]
 
 
-def unjoin(base: str, absolute_path: str) -> str:
-    if base == '':
-        return absolute_path
-    return absolute_path[len(base) + 1:]
-
-
-def reline_file(base: str, path: str, info: Info, destination: str) -> None:
-    filename = join(base, path)
-    with open(filename, 'rb+') as file:
+def reline_file(f: File, info: Info, destination: str, dryrun: bool) -> None:
+    with open(f.abs, 'rb+') as file:
         lines = file.read()
         file.seek(0)
         try:
             content = str(lines, 'utf-8')
         except UnicodeDecodeError:
-            info.malformed_encoding(normpath(path))
+            info.malformed_encoding(f.relative)
             return
         replaced = reline_string(destination, content)
         if replaced == content:
-            info.already_relined(normpath(path), destination)
+            info.already_relined(f.relative, destination)
         else:
-            file.write(bytes(replaced, 'utf-8'))
-            file.truncate()
-            info.updated(normpath(path))
+            if not dryrun:
+                file.write(bytes(replaced, 'utf-8'))
+                file.truncate()
+            info.updated(f.relative)
 
 
 def reline_string(direction: str, string: str) -> str:

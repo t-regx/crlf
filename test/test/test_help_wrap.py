@@ -8,7 +8,7 @@ def test_help_wide(application: Application):
         # when
         output = application.run(dir(), ['--help'], width=120)
     # then
-    assert output.text == """usage: crlf [-h] [-V] [-q | -s] [-R] --to {crlf,lf} filename
+    assert output.text == """usage: crlf [-h] [-V] [-q | -s] [-d] [-R] --to {crlf,lf} filename
 
 Tool to change line endings of text files
 
@@ -20,6 +20,7 @@ options:
   -V, --version   show version
   -q, --quiet     change line endings without batch output, only summary
   -s, --silent    change line endings without any output
+  -d, --dry-run   do not actually modify files
   -R              recurse into nested directories
   --to {crlf,lf}  change line endings to CRLF or LF
 """
@@ -31,8 +32,8 @@ def test_help_narrow(application: Application):
         # when
         output = application.run(dir(), ['--help'], width=40)
     # then
-    assert output.text == """usage: crlf [-h] [-V] [-q | -s] [-R]
-            --to {crlf,lf}
+    assert output.text == """usage: crlf [-h] [-V] [-q | -s] [-d]
+            [-R] --to {crlf,lf}
             filename
 
 Tool to change line endings of text
@@ -51,6 +52,8 @@ options:
                   output, only summary
   -s, --silent    change line endings
                   without any output
+  -d, --dry-run   do not actually
+                  modify files
   -R              recurse into nested
                   directories
   --to {crlf,lf}  change line endings
@@ -67,6 +70,7 @@ def test_help_extra_narrow(application: Application):
     assert output.text == """usage: crlf [-h]
             [-V]
             [-q | -s]
+            [-d]
             [-R]
             --to
             {crlf,lf}
@@ -98,6 +102,10 @@ options:
     endings
     without any
     output
+  -d, --dry-run
+    do not
+    actually
+    modify files
   -R
     recurse into
     nested
