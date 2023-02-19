@@ -43,16 +43,19 @@ class StandardInfo(Info):
         print('Updated: ' + path)
 
     def non_unicode(self, path: str) -> None:
-        self._failed += 1
-        print('Failed:  ' + path)
-        print('         ^ ! expected text file in unicode encoding, failed to parse file')
+        self.__failed(path, '! expected text file in unicode encoding, failed to parse file')
 
     def restricted(self, path: str) -> None:
-        self._failed += 1
-        print(f'Failed:  {path}')
-        print(f'         ^ insufficient permissions to open file')
+        self.__failed(path, 'insufficient permissions to open file')
 
     def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1
-        print(f'Ignored: {path}')
-        print(f'         ^ file already has {destination.upper()} line endings')
+        self.__print('Ignored:', path, f'file already has {destination.upper()} line endings')
+
+    def __failed(self, path: str, message: str) -> None:
+        self._failed += 1
+        self.__print('Failed:', path, message)
+
+    def __print(self, type: str, path: str, message: str) -> None:
+        print(type.ljust(9) + path)
+        print(' ' * 9 + '^ ' + message)
