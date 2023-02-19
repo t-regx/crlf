@@ -39,26 +39,28 @@ def walk(directory: Directory, recurse: bool) -> Iterator:
     return [next(os.walk(directory.abs))]
 
 
-def reline_file(f: File, info: Info, destination: str, dryrun: bool) -> None:
+def reline_file(file: File, info: Info, destination: str, dryrun: bool) -> None:
     try:
-        with open(f.abs, 'rb+') as file:
-            lines = file.read()
-            file.seek(0)
-            try:
-                content = str(lines, 'utf-8')
-            except UnicodeDecodeError:
-                info.non_unicode(f.relative)
-                return
-            replaced = reline_string(destination, content)
-            if replaced == content:
-                info.already_relined(f.relative, destination)
-            else:
-                if not dryrun:
-                    file.write(bytes(replaced, 'utf-8'))
-                    file.truncate()
-                info.updated(f.relative)
+        try_reline_file(file, info, destination, dryrun)
     except PermissionError:
-        info.restricted(f.relative)
+        info.restricted(file.relative)
+    except UnicodeDecodeError:
+        info.non_unicode(file.relative)
+
+
+def try_reline_file(subject: File, info: Info, destination: str, dryrun: bool) -> None:
+    with open(subject.abs, 'rb+') as file:
+        lines = file.read()
+        file.seek(0)
+        content = str(lines, 'utf-8')
+        replaced = reline_string(destination, content)
+        if replaced == content:
+            info.already_relined(subject.relative, destination)
+        else:
+            if not dryrun:
+                file.write(bytes(replaced, 'utf-8'))
+                file.truncate()
+            info.updated(subject.relative)
 
 
 def reline_string(direction: str, string: str) -> str:
