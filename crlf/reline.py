@@ -68,6 +68,4 @@ def reline_file(base: str, path: str, info: Info, destination: str) -> None:
 
 
 def reline_string(direction: str, string: str) -> str:
-    if direction == 'crlf':
-        return sub(r'(?<!\r)\n', '\r\n', string)
-    return string.replace("\r\n", "\n")
+    return sub(r'\r\n|\r|\n', '\r\n' if direction == 'crlf' else "\n", string)

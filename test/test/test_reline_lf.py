@@ -64,9 +64,9 @@ def test_reline_to_lf_subdirectory(application: Application):
 def test_reline_mixed_endings(application: Application):
     # given
     with directory() as dir:
-        dir.store('file.txt', "first\r\nsecond\n")
+        dir.store('file.txt', "first\r\nsecond\nthird\r")
         # when
         output = application.run(dir(), ['--to', 'lf', 'file.txt'])
         # then
-        assert dir.open('file.txt') == "first\nsecond\n"
+        assert dir.open('file.txt') == "first\nsecond\nthird\n"
         assert output.text == updated(['file.txt'])
