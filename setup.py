@@ -9,5 +9,5 @@ setup(name='crlf',
       version=f'{__version__}.dev{get_and_increment()}',
       packages=find_packages(include=['crlf']),
       entry_points={
-          'console_scripts': ['crlf=crlf.__main__:start'],
+          'console_scripts': ['crlf=crlf.__main__:main'],
       })

@@ -1,8 +1,10 @@
+import os
 import sys
 from abc import abstractmethod, ABC
 from io import StringIO
+from os import chdir, environ
+from os.path import dirname
 
-from crlf.reline import main
 from test.fixture.output import Output
 from test.fixture.subprocess import completed_process
 
@@ -36,10 +38,15 @@ class MemoryApplication(Application):
             sys.stderr = _sys_stderr
 
     def execute(self, directory: str, arguments: list[str], width: int) -> None:
+        chdir(directory)
+        sys.argv = ['', *arguments]
+        environ['COLUMNS'] = str(width)
+        from crlf.__main__ import main
         try:
-            main(directory, arguments, width)
+            main()
         except SystemExit:
             pass
+        os.chdir(dirname(dirname(directory)))
 
 
 class LinesStringIO(StringIO):

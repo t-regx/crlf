@@ -1,4 +1,5 @@
 import os
+from os import getcwd
 from os.path import join
 from re import sub
 from typing import Iterator
@@ -8,8 +9,8 @@ from crlf.fs import Directory, File, RootPath
 from crlf.summary import Info
 
 
-def main(base: str, arguments: list[str], width: int) -> None:
-    root, recurse, info, destination, dryrun = parsed_arguments(base, arguments, width)
+def main() -> None:
+    root, recurse, info, destination, dryrun = parsed_arguments(getcwd())
     reline(root, recurse, info, destination, dryrun)
     info.summary(dryrun)
 
