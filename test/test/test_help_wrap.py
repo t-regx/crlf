@@ -44,20 +44,19 @@ positional arguments:
                   directory
 
 options:
-  -h, --help      show this help
-                  message
+  -h, --help      show this help message
   -V, --version   show version
   -q, --quiet     change line endings
-                  without batch
-                  output, only summary
+                  without batch output,
+                  only summary
   -s, --silent    change line endings
                   without any output
-  -d, --dry-run   do not actually
-                  modify files
+  -d, --dry-run   do not actually modify
+                  files
   -R              recurse into nested
                   directories
-  --to {crlf,lf}  change line endings
-                  to CRLF or LF
+  --to {crlf,lf}  change line endings to
+                  CRLF or LF
 """
 
 
@@ -76,9 +75,9 @@ def test_help_extra_narrow(application: Application):
             {crlf,lf}
             filename
 
-Tool to change
-line endings of
-text files
+Tool to change line
+endings of text
+files
 
 positional arguments:
   filename
@@ -93,18 +92,15 @@ options:
     show version
   -q, --quiet
     change line
-    endings
-    without batch
-    output, only
-    summary
+    endings without
+    batch output,
+    only summary
   -s, --silent
     change line
-    endings
-    without any
-    output
+    endings without
+    any output
   -d, --dry-run
-    do not
-    actually
+    do not actually
     modify files
   -R
     recurse into
@@ -112,6 +108,6 @@ options:
     directories
   --to {crlf,lf}
     change line
-    endings to
-    CRLF or LF
+    endings to CRLF
+    or LF
 """

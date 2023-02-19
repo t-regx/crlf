@@ -26,20 +26,18 @@ class MemoryApplication(Application):
     def run(self, directory: str, arguments: list[str], width: int = 80) -> Output:
         _sys_stdout = sys.stdout
         _sys_stderr = sys.stderr
+
         sys.stdout = LinesStringIO()
         sys.stderr = LinesStringIO()
-        self.execute(directory, arguments, width)
+        try:
+            main(directory, arguments, width)
+        except SystemExit:
+            pass
         try:
             return Output(str(sys.stdout), str(sys.stderr))
         finally:
             sys.stdout = _sys_stdout
             sys.stderr = _sys_stderr
-
-    def execute(self, directory: str, arguments: list[str], width: int) -> None:
-        try:
-            main(directory, arguments, width)
-        except SystemExit:
-            pass
 
 
 class LinesStringIO(StringIO):

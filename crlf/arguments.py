@@ -2,16 +2,15 @@ from argparse import ArgumentParser, HelpFormatter
 from os.path import exists, join, normpath
 
 from crlf import __version__, __name__
-from crlf.fs import RootPath
 from crlf.summary import Info, StandardInfo, QuietInfo, SilentInfo
 
 
-def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[RootPath, bool, Info, str, bool]:
+def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[str, bool, Info, str, bool]:
     parser = ArgumentParser(
         prog=__name__,
         description='Tool to change line endings of text files',
         add_help=False,
-        formatter_class=lambda prog: HelpFormatter(prog, width=width-2),
+        formatter_class=lambda prog: HelpFormatter(prog, width=width),
         allow_abbrev=False)
     parser.add_argument('filename', help='path to a file or directory')
     parser.add_argument('-h', '--help', help='show this help message', action='help')
@@ -29,7 +28,7 @@ def parsed_arguments(base: str, arguments: list[str], width: int) -> tuple[RootP
         parser.error(f"file does not exist '{args.filename}'")
     if not exists(join(base, args.filename)):
         parser.error(f"file does not exist '{normpath(args.filename)}'")
-    return RootPath(base, args.filename), args.recurse, info(args.quiet, args.silent), args.destination, args.dry_run
+    return args.filename, args.recurse, info(args.quiet, args.silent), args.destination, args.dry_run
 
 
 def info(quiet: bool, silent: bool) -> Info:
