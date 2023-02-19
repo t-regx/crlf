@@ -80,6 +80,40 @@ def test_quiet_failed(application: Application, argument: str):
     assert output.output_text == summary(failed=1)
 
 
+def test_quiet_failed_many(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/one.txt', b'\x1f\x7f\xee')
+        dir.store('directory/two.txt', b'\x1f\x7f\xee')
+        # when
+        output = application.run(dir(), ['--to', 'lf', '--quiet', 'directory/'])
+    # then
+    assert output.output_text == summary(failed=2)
+
+
+def test_quiet_restricted(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('file.txt', 'line\n')
+        with dir.permissions(['file.txt'], 0):
+            # when
+            output = application.run(dir(), ['--to', 'lf', '--quiet', 'file.txt'])
+        # then
+        assert output.text == summary(failed=1)
+
+
+def test_quiet_restricted_many(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('directory/one.txt', 'line\n')
+        dir.store('directory/two.txt', 'line\n')
+        with dir.permissions(['directory/one.txt', 'directory/two.txt'], 0):
+            # when
+            output = application.run(dir(), ['--to', 'lf', '--quiet', 'directory/'])
+        # then
+        assert output.text == summary(failed=2)
+
+
 @mark.parametrize("argument", arguments)
 def test_quiet_output_error(application: Application, argument: str):
     # given

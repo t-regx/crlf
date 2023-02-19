@@ -39,22 +39,25 @@ def walk(directory: Directory, recurse: bool) -> Iterator:
 
 
 def reline_file(f: File, info: Info, destination: str, dryrun: bool) -> None:
-    with open(f.abs, 'rb+') as file:
-        lines = file.read()
-        file.seek(0)
-        try:
-            content = str(lines, 'utf-8')
-        except UnicodeDecodeError:
-            info.non_unicode(f.relative)
-            return
-        replaced = reline_string(destination, content)
-        if replaced == content:
-            info.already_relined(f.relative, destination)
-        else:
-            if not dryrun:
-                file.write(bytes(replaced, 'utf-8'))
-                file.truncate()
-            info.updated(f.relative)
+    try:
+        with open(f.abs, 'rb+') as file:
+            lines = file.read()
+            file.seek(0)
+            try:
+                content = str(lines, 'utf-8')
+            except UnicodeDecodeError:
+                info.non_unicode(f.relative)
+                return
+            replaced = reline_string(destination, content)
+            if replaced == content:
+                info.already_relined(f.relative, destination)
+            else:
+                if not dryrun:
+                    file.write(bytes(replaced, 'utf-8'))
+                    file.truncate()
+                info.updated(f.relative)
+    except PermissionError:
+        info.restricted(f.relative)
 
 
 def reline_string(direction: str, string: str) -> str:

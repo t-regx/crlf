@@ -13,6 +13,9 @@ class Info(ABC):
     def non_unicode(self, path: str) -> None:
         self._failed += 1
 
+    def restricted(self, path: str) -> None:
+        self._failed += 1
+
     def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1
 
@@ -43,6 +46,11 @@ class StandardInfo(Info):
         self._failed += 1
         print('Failed:  ' + path)
         print('         ^ ! expected text file in unicode encoding, failed to parse file')
+
+    def restricted(self, path: str) -> None:
+        self._failed += 1
+        print(f'Failed:  {path}')
+        print(f'         ^ insufficient permissions to open file')
 
     def already_relined(self, path: str, destination: str) -> None:
         self._ignored += 1

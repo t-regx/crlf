@@ -2,7 +2,7 @@ from pytest import mark
 
 from test.fixture.application import Application
 from test.fixture.directory import directory
-from test.fixture.usage import summary, updated, ignored, failed
+from test.fixture.usage import summary, updated, ignored, failed, restricted
 
 
 @mark.parametrize("argument", ['-d', '--dry-run'])
@@ -90,3 +90,14 @@ def test_dryrun_summary_silent(application: Application):
         output = application.run(dir(), ['--to', 'lf', '--dry-run', '--silent', 'directory'])
     # then
     assert output.text == ''
+
+
+def test_failed_restricted_file(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('file.txt', 'line\n')
+        with dir.permissions(['file.txt'], 0):
+            # when
+            output = application.run(dir(), ['--to', 'lf', '--dry-run', 'file.txt'])
+        # then
+        assert output.text == restricted(['file.txt'], dryrun=True)

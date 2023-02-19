@@ -78,6 +78,17 @@ def test_silent_failed(application: Application):
     assert output.output_text == ""
 
 
+def test_silent_restricted(application: Application):
+    # given
+    with directory() as dir:
+        dir.store('file.txt', 'line\n')
+        with dir.permissions(['file.txt'], 0):
+            # when
+            output = application.run(dir(), ['--to', 'lf', '--silent', 'file.txt'])
+        # then
+        assert output.text == ''
+
+
 def test_silent_output_error(application: Application):
     # given
     with directory() as dir:

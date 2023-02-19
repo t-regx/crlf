@@ -23,6 +23,21 @@ class TemporaryDirectory:
         rmtree(self.test_dir)
 
 
+class TemporaryPermissions:
+    def __init__(self, handle: 'Handle', filenames: list[str], mode: int):
+        self.handle = handle
+        self.filenames = filenames
+        self.mode = mode
+
+    def __enter__(self):
+        for filename in self.filenames:
+            os.chmod(self.handle.join(filename), 0)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        for filename in self.filenames:
+            os.chmod(self.handle.join(filename), 0o744)
+
+
 class Handle:
     def __init__(self, test_dir: str):
         self.test_dir = test_dir
@@ -56,3 +71,6 @@ class Handle:
 
     def join(self, *filenames: str) -> str:
         return os.path.join(self.test_dir, *filenames).replace('\\', '/')
+
+    def permissions(self, filenames: list[str], mode: int) -> TemporaryPermissions:
+        return TemporaryPermissions(self, filenames, mode)

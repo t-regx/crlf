@@ -22,6 +22,12 @@ def ignored(filenames: list[str], destination: str, dryrun: bool = False) -> str
         dryrun)
 
 
+def restricted(filenames: list[str], dryrun: bool = False) -> str:
+    return append_dryrun(
+        ''.join([_restricted(filename) for filename in filenames]) + summary(failed=len(filenames)),
+        dryrun)
+
+
 def failed(filenames: list[str], dryrun: bool = False) -> str:
     return append_dryrun(
         ''.join([_failed(filename) for filename in filenames]) + summary(failed=len(filenames)),
@@ -37,6 +43,12 @@ def _ignored(filename: str, destination: str) -> str:
 def _failed(filename: str) -> str:
     return f"""Failed:  {filename}
          ^ ! expected text file in unicode encoding, failed to parse file
+"""
+
+
+def _restricted(filename: str) -> str:
+    return f"""Failed:  {filename}
+         ^ insufficient permissions to open file
 """
 
 
