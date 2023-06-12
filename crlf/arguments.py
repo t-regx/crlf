@@ -1,12 +1,13 @@
 from argparse import ArgumentParser
 from os.path import exists, normpath
+from typing import Tuple
 
 from crlf import __version__, __name__
 from crlf.fs import RootPath
 from crlf.summary import Info, StandardInfo, QuietInfo, SilentInfo
 
 
-def parsed_arguments(base: str) -> tuple[RootPath, bool, Info, str, bool]:
+def parsed_arguments(base: str) -> Tuple[RootPath, bool, Info, str, bool]:
     parser = ArgumentParser(
         prog=__name__,
         description='Tool to change line endings of text files',
